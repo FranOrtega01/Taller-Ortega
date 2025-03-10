@@ -7,6 +7,26 @@ export default class InvoiceRepository{
     }
 
     get = async () => {
-        return await this.dao.get()
+        try {
+            return await this.dao.get()
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    create = async (data) => {
+        try {
+            return await this.dao.create(data);
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    update = async (data) => {
+
+    }
+
+    deleteOne = async (id) => {
+        
     }
 }
