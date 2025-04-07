@@ -1,11 +1,11 @@
-import { CompanyService } from "../repository/index.js";
+import { SupplierService } from "../repository/index.js";
 import { ErrorResponse, SuccessResponse } from "./customResponse.js";
 import mongoose from "mongoose";
 
 export const get = async (req, res) => {
     try {
-        const companies = await CompanyService.get();
-        return SuccessResponse(res, companies);
+        const suppliers = await SupplierService.get();
+        return SuccessResponse(res, suppliers);
     } catch (error) {
         return ErrorResponse(res, error);
     }
@@ -14,12 +14,11 @@ export const get = async (req, res) => {
 export const getByID = async (req, res) => {
     try {
         const { id } = req.params;
-
-        let company;
+        let supplier;
         if (mongoose.Types.ObjectId.isValid(id)) {
-            company = await CompanyService.getByID(id);
+            supplier = await SupplierService.getByID(id);
         } else if (/^\d{11}$/.test(id)) {
-            company = await CompanyService.getByCUIT(id);
+            supplier = await SupplierService.getByCUIT(id);
         } else {
             return ErrorResponse(
                 res,
@@ -27,11 +26,11 @@ export const getByID = async (req, res) => {
                 400
             );
         }
-        return SuccessResponse(res, company);
+        return SuccessResponse(res, supplier);
     } catch (error) {
         if (
-            error.message === "Compania no encontrada" ||
-            error?.errorMessages?.[0] === "Compania no encontrada"
+            error.message === "Proveedor no encontrado" ||
+            error?.errorMessages?.[0] === "Proveedor no encontrado"
         ) {
             return SuccessResponse(res, {}, 204);
         }
@@ -41,8 +40,10 @@ export const getByID = async (req, res) => {
 
 export const create = async (req, res) => {
     try {
-        const company = await CompanyService.create(req?.body);
-        return SuccessResponse(res, company);
+        if (!Object.keys(req.body).length)
+            return ErrorResponse(res, "El Proveedor debe tener información", 400);
+        const supplier = await SupplierService.create(req?.body);
+        return SuccessResponse(res, supplier);
     } catch (error) {
         return ErrorResponse(res, error);
     }
@@ -54,8 +55,8 @@ export const update = async (req, res) => {
     try {
         const { id } = req.params;
         if (req.body._id) delete req.body._id;
-        const company = await CompanyService.update(id, req?.body);
-        return SuccessResponse(res, company);
+        const supplier = await SupplierService.update(id, req?.body);
+        return SuccessResponse(res, supplier);
     } catch (error) {
         return ErrorResponse(res, error);
     }
@@ -64,7 +65,7 @@ export const update = async (req, res) => {
 export const deleteOne = async (req, res) => {
     try {
         const { id } = req.params;
-        await CompanyService.delete(id);
+        await SupplierService.delete(id);
         return SuccessResponse(res);
     } catch (error) {
         return ErrorResponse(res, error);

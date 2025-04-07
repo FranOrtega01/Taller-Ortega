@@ -20,3 +20,11 @@ export function ErrorResponse(res, errorOrMessage, statusCode = 500) {
         message: errorOrMessage || "Error desconocido"
     });
 }
+
+export function formatLicensePlate(lic){
+    try {
+        return lic.toString().replace(/\s/g, "").toUpperCase();
+    } catch (error) {
+        return ""
+    }
+}

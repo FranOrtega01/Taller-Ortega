@@ -5,16 +5,26 @@ export function handleError(error, model) {
 
     let response = {
         message: "Error en la base de datos",
-        errorMessages: [],
+        errorMessages: error?.errorMessages || [],
         statusCode: 500,
     };
 
     if (error.name === "ValidationError") {
         response.message = "Error de validación";
         response.statusCode = 400;
-        response.errorMessages = Object.values(error.errors).map(
-            (e) => e.message
-        );
+        Object.values(error.errors).forEach((fieldError) => {
+            if (fieldError.kind === "enum") {
+                const allowedValues = mongoose.models[model]?.schema.path(fieldError.path)?.enumValues || [];
+                response.errorMessages.push(
+                    `Error en '${fieldError.path}': '${fieldError.value}' no es un valor permitido.`
+                );
+                response.errorMessages.push(
+                    `Valores permitidos: ${allowedValues.map(v => `"${v}"`).join(", ")}`
+                );
+            } else {
+                response.errorMessages.push(`Error en '${fieldError.path}': ${fieldError.message}`);
+            }
+        });
     } else if (error.name === "CastError") {
         response.message = "Error de tipo de dato";
         response.statusCode = 400;
@@ -29,10 +39,10 @@ export function handleError(error, model) {
             );
         }
 
-        response.errorMessages = [
+        response.errorMessages.push(
             `Formato incorrecto en '${error.path}'.`,
             expectedFormat,
-        ];
+        );
     } else if (error.code === 11000 || error?.cause?.code === 11000) {
         response.message = "Error de duplicado";
         response.statusCode = 409;
@@ -40,15 +50,15 @@ export function handleError(error, model) {
             Object.keys(
                 error?.cause?.keyPattern || error?.keyPattern || {}
             )[0] || "desconocido";
-        response.errorMessages = [
+        response.errorMessages.push(
             `El campo '${duplicatedField}' ya está registrado.`,
-        ];
+        );
     } else if (error instanceof TypeError || error instanceof ReferenceError) {
         response.message = "Error interno del servidor";
         response.statusCode = 500;
-        response.errorMessages = [error.message];
+        response.errorMessages.push(error.message);
     } else {
-        response.errorMessages = [error.message];
+        response.errorMessages.push(error.message);
     }
 
     return response;

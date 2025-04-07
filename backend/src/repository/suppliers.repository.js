@@ -1,6 +1,6 @@
 import { handleError } from "./utils.js";
 
-export default class CompanyRepository {
+export default class SupplierRepository {
     constructor(dao) {
         this.dao = dao;
     }
@@ -9,39 +9,40 @@ export default class CompanyRepository {
         try {
             return await this.dao.get();
         } catch (error) {
-            throw handleError(error, "companies");
+            throw handleError(error, "suppliers");
         }
     };
 
     getByID = async (id) => {
         try {
-            const company = await this.dao.getByID(id);
-            if (!company) {
-                throw new Error("Compania no encontrada");
+            const supplier = await this.dao.getByID(id);
+            if (!supplier) {
+                throw new Error("Proveedor no encontrado");
             }
-            return company;
+            return supplier;
         } catch (error) {
-            throw handleError(error, "companies");
+            throw handleError(error, "suppliers");
         }
     };
 
-    getByCUIT = async (id) => {
+    getByCUIT = async (cuit) => {
         try {
-            const company = await this.dao.getByCUIT(id);
-            if (!company) {
-                throw new Error("Compania no encontrada");
+            const supplier = await this.dao.getByCUIT(cuit);
+            if (!supplier) {
+                throw new Error("Proveedor no encontrado");
             }
-            return company;
+            return supplier;
         } catch (error) {
-            throw handleError(error, "companies");
+            throw handleError(error, "suppliers");
         }
     };
+
 
     create = async (data) => {
         try {
             return await this.dao.create(data);
         } catch (error) {
-            throw handleError(error, "companies");
+            throw handleError(error, "suppliers");
         }
     };
 
@@ -49,7 +50,7 @@ export default class CompanyRepository {
         try {
             return await this.dao.update(id, data);
         } catch (error) {
-            throw handleError(error, "companies");
+            throw handleError(error, "suppliers");
         }
     };
 
@@ -57,7 +58,7 @@ export default class CompanyRepository {
         try {
             return await this.dao.delete(id);
         } catch (error) {
-            throw handleError(error, "companies");
+            throw handleError(error, "suppliers");
         }
     };
 }

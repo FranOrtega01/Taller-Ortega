@@ -1,5 +1,5 @@
 import { handleError } from "./utils.js";
-export default class EstimateRepository{
+export default class PurchaseRepository{
     
     constructor(dao){
         this.dao = dao
@@ -9,7 +9,7 @@ export default class EstimateRepository{
         try {
             return await this.dao.get();
         } catch (error) {
-            throw handleError(error, "estimates");
+            throw handleError(error, "purchases");
         }
     };
 
@@ -17,11 +17,11 @@ export default class EstimateRepository{
         try {
             const estimate = await this.dao.getByID(id);
             if (!estimate) {
-                throw new Error("Presupuesto no encontrado");
+                throw new Error("Compra no encontrada");
             }
             return estimate;
         } catch (error) {
-            throw handleError(error, "estimates");
+            throw handleError(error, "purchases");
         }
     };
 
@@ -29,7 +29,7 @@ export default class EstimateRepository{
         try {
             return await this.dao.create(data);
         } catch (error) {
-            throw handleError(error, "estimates");
+            throw handleError(error, "purchases");
         }
     };
 
@@ -37,7 +37,7 @@ export default class EstimateRepository{
         try {
             return await this.dao.update(id, data);
         } catch (error) {
-            throw handleError(error, "estimates");
+            throw handleError(error, "purchases");
         }
     };
 
@@ -45,7 +45,7 @@ export default class EstimateRepository{
         try {
             return await this.dao.delete(id);
         } catch (error) {
-            throw handleError(error, "estimates");
+            throw handleError(error, "purchases");
         }
     };
 }

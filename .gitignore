@@ -1,3 +1,5 @@
 *.drawio
 *.bkp
 /*/.gitignore
+/*/node_modules
+/*/.env

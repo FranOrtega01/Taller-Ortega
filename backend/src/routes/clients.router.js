@@ -1,16 +1,16 @@
 import { Router } from 'express';
-import { get, getByID, create, update, deleteOne} from '../controller/estimates.controller.js';
+import { get, create, getById, update, deleteOne } from '../controller/clients.controller.js';
 
 const router = Router();
 
 router.get('/', get);
 
-router.get('/:id', getByID);
+router.get('/:id', getById);
 
 router.post('/', create);
 
 router.put('/:id', update);
 
-router.delete('/:id', deleteOne)
+router.delete("/:id", deleteOne);
 
 export default router;

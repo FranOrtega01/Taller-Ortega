@@ -1,5 +1,4 @@
 // import messageDTO from '../DAO/DTO/message.dto.js'
-
 export default class JobRepository{
     
     constructor(dao){
@@ -14,19 +13,27 @@ export default class JobRepository{
         }
     }
 
-    create = async (data) => {
+    create = async (data, options = {}) => {
         try {
-            return await this.dao.create(data);
+            return await this.dao.create(data, options);
         } catch (error) {
             throw new Error(error.message);
         }
     }
 
-    update = async (data) => {
-
+    update = async (id, data, options = {}) => {
+        try {
+            return await this.dao.update(id, data, options);
+        } catch (error) {
+            throw new Error(error.message);
+        }
     }
 
-    deleteOne = async (id) => {
-        
+    delete = async (id, options = {}) => {
+        try {
+            return await this.dao.delete(id, options);
+        } catch (error) {
+            throw new Error(error.message);
+        }
     }
 }

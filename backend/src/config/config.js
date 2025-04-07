@@ -7,6 +7,7 @@ export default {
     
     mongoURI: process.env.MONGO_URI,
     mongoDBName: process.env.MONGO_DB_NAME,
+    timezone: process.env.TZ
     // mongoTestUri:process.env.TEST_MONGO_URI,
 
     // jwtPrivateKey: process.env.JWT_PRIVATE_KEY,

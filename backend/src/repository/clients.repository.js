@@ -1,27 +1,27 @@
 import { handleError } from "./utils.js";
-export default class EstimateRepository{
-    
-    constructor(dao){
-        this.dao = dao
+
+export default class ClientRepository {
+    constructor(dao) {
+        this.dao = dao;
     }
 
     get = async () => {
         try {
             return await this.dao.get();
         } catch (error) {
-            throw handleError(error, "estimates");
+            throw handleError(error, "clients");
         }
     };
 
-    getByID = async (id) => {
+    getById = async (id) => {
         try {
-            const estimate = await this.dao.getByID(id);
-            if (!estimate) {
-                throw new Error("Presupuesto no encontrado");
+            const client = await this.dao.getByID(id);
+            if (!client) {
+                throw new Error("Cliente no encontrado");
             }
-            return estimate;
+            return client;
         } catch (error) {
-            throw handleError(error, "estimates");
+            throw handleError(error, "clients");
         }
     };
 
@@ -29,7 +29,7 @@ export default class EstimateRepository{
         try {
             return await this.dao.create(data);
         } catch (error) {
-            throw handleError(error, "estimates");
+            throw handleError(error, "clients");
         }
     };
 
@@ -37,7 +37,7 @@ export default class EstimateRepository{
         try {
             return await this.dao.update(id, data);
         } catch (error) {
-            throw handleError(error, "estimates");
+            throw handleError(error, "clients");
         }
     };
 
@@ -45,7 +45,7 @@ export default class EstimateRepository{
         try {
             return await this.dao.delete(id);
         } catch (error) {
-            throw handleError(error, "estimates");
+            throw handleError(error, "clients");
         }
     };
 }

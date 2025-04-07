@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { phoneSchema, addressSchema } from "./utils.js";
 
 const companySchema = new mongoose.Schema({
     cuit: {
@@ -11,8 +12,12 @@ const companySchema = new mongoose.Schema({
         ],
         validate: {
             validator: async function (value) {
-                const exists = await this.constructor.findOne({ cuit: value });
-                return !exists;
+                const filter = this.isNew 
+                ? { cuit: value } 
+                : { cuit: value, _id: { $ne: this.getQuery()._id } };
+
+            const exists = await mongoose.models["companies"].findOne(filter);
+            return !exists;
             },
             message: "El CUIT ya está registrado.",
         },
@@ -23,9 +28,11 @@ const companySchema = new mongoose.Schema({
         unique: true,
         validate: {
             validator: async function (value) {
-                const exists = await this.constructor.findOne({
-                    name: value,
-                });
+                const filter = this.isNew 
+                    ? { name: value } 
+                    : { name: value, _id: { $ne: this.getQuery()._id } };
+
+                const exists = await mongoose.models["companies"].findOne(filter);
                 return !exists;
             },
             message: "Ya hay una compañía con este Nombre.",
@@ -37,9 +44,11 @@ const companySchema = new mongoose.Schema({
         unique: true,
         validate: {
             validator: async function (value) {
-                const exists = await this.constructor.findOne({
-                    fiscalName: value,
-                });
+                const filter = this.isNew 
+                    ? { fiscalName: value } 
+                    : { fiscalName: value, _id: { $ne: this.getQuery()._id } };
+
+                const exists = await mongoose.models["companies"].findOne(filter);
                 return !exists;
             },
             message: "Ya hay una compañía con esta Razón Social.",
@@ -47,11 +56,7 @@ const companySchema = new mongoose.Schema({
     },
 
     fiscalAdress: {
-        type: {
-            adress: { type: String },
-            city: { type: String },
-            province: { type: String }
-        },
+        type: {addressSchema},
         default: null 
     },
 
@@ -66,7 +71,7 @@ const companySchema = new mongoose.Schema({
     },
 
     phones:{
-        type: [String],
+        type: [phoneSchema],
         default: []
     }
 });
