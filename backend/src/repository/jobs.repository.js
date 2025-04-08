@@ -13,6 +13,18 @@ export default class JobRepository{
         }
     }
 
+    getByID = async (id) => {
+        try {
+            const job = await this.dao.getByID(id);
+            if (!job) {
+                throw new Error("Trabajo no encontrado");
+            }
+            return job;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    };
+
     create = async (data, options = {}) => {
         try {
             return await this.dao.create(data, options);

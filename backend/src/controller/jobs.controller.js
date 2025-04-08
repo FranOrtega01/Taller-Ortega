@@ -10,6 +10,8 @@ import {
     formatLicensePlate,
 } from "./customResponse.js";
 import mongoose from "mongoose";
+
+
 export const get = async (req, res) => {
     try {
         const jobs = await JobService.get();
@@ -18,6 +20,21 @@ export const get = async (req, res) => {
         ErrorResponse(res, error);
     }
 };
+
+export const getByID = async (req, res) => {
+    try {
+        const job = await JobService.getByID(req.params.id)
+        return SuccessResponse(res, job)
+    } catch (error) {
+        if (
+            error.message === "Trabajo no encontrado" ||
+            error?.errorMessages?.[0] === "Trabajo no encontrado"
+        ) {
+            return SuccessResponse(res, {}, 204);
+        }
+        return ErrorResponse(res, error)
+    }
+}
 
 export const create = async (req, res) => {
     if (!Object.keys(req.body).length)

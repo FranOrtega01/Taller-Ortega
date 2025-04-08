@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
     get,
+    getByID,
     create,
     update,
     deleteOne,
@@ -12,6 +13,7 @@ import {
 const router = Router();
 
 router.get("/", get);
+router.get("/:id", getByID);
 router.post("/", create);
 router.post("/job/:id/amp", createAmp);
 router.put("/:id", update);
