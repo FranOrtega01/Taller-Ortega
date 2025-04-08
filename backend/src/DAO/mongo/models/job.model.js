@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
-import { formatGMTm3, partSchema, workPanelsSchema, observationSchema, JOB_STATUS_CODES, JOB_STATUS_ENUM } from "./utils.js";
+import {
+    formatGMTm3,
+    partSchema,
+    workPanelsSchema,
+    observationSchema,
+    JOB_STATUS_CODES,
+    JOB_STATUS_ENUM,
+} from "./utils.js";
 
 const jobSchema = new mongoose.Schema({
     vehicle: {
@@ -50,7 +57,35 @@ const jobSchema = new mongoose.Schema({
     parts: {
         type: [partSchema],
         default: [],
-    }
+    },
+    amps: {
+        type: [
+            {
+                date: {
+                    type: Date,
+                    default: formatGMTm3(new Date()),
+                },
+                description: {
+                    type: String,
+                    default: "",
+                },
+                observations: {
+                    type: [observationSchema],
+                    default: [],
+                },
+                amount: {
+                    type: Number,
+                    default: 0,
+                },
+                workPanels: workPanelsSchema,
+                parts: {
+                    type: [partSchema],
+                    default: [],
+                },
+            },
+        ],
+        default: [],
+    },
 });
 
 export default mongoose.model("jobs", jobSchema);

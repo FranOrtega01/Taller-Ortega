@@ -36,4 +36,26 @@ export default class JobRepository{
             throw new Error(error.message);
         }
     }
+
+    createAmp = async (id, data, options = {}) => {
+        try {
+            return await this.dao.createAmp(id, data, options);
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    updateAmp = async (id, ampId, data, options = {}) => {
+        try {
+            return await this.dao.updateAmp(id, ampId, data, options);
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    deleteAmp = async (id, ampId, options = {}) => {
+        try {
+            return await this.dao.deleteAmp(id, ampId, options);
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
 }
