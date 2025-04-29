@@ -1,0 +1,17 @@
+{
+  "React Arrow Function Component": {
+    "prefix": "rafc",
+    "body": [
+      "import React, {useState, useEffect} from 'react';",
+      "",
+      "const ${1:ComponentName} = () => {",
+      "  return (",
+      "    <div>${2}</div>",
+      "  );",
+      "};",
+      "",
+      "export default ${1:ComponentName};"
+    ],
+    "description": "Create a React functional component with import"
+  }
+}

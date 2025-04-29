@@ -87,7 +87,7 @@ export const create = async (req, res) => {
             parts: req?.body?.parts,
             thumbnails: req?.body?.thumbnails,
             type: req?.body?.type,
-            isParticular: req?.body?.type,
+            isParticular: req?.body?.isParticular,
         };
 
         // Start Session in case of rollback @Fran
