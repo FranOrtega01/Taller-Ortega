@@ -17,9 +17,12 @@ const jobSchema = new mongoose.Schema({
     claims: {
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: "claims" }],
         required: [
-            function(){
-                return (this.status !== JOB_STATUS_ENUM.PENDING.code && !this.isParticular)
-            }
+            function () {
+                return (
+                    this.status !== JOB_STATUS_ENUM.PENDING.code &&
+                    !this.isParticular
+                );
+            },
         ],
         default: [],
     },
@@ -30,6 +33,11 @@ const jobSchema = new mongoose.Schema({
     entryDate: {
         type: Date,
         default: null,
+        required: [
+            function () {
+                return this.status !== JOB_STATUS_ENUM.PENDING.code;
+            },
+        ],
     },
     description: {
         type: String,
@@ -43,6 +51,11 @@ const jobSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "estimates",
         default: null,
+        required: [
+            function () {
+                return this.status !== JOB_STATUS_ENUM.PENDING.code;
+            },
+        ],
     },
     amount: {
         type: Number,
@@ -111,6 +124,5 @@ const jobSchema = new mongoose.Schema({
         default: [],
     },
 });
-
 
 export default mongoose.model("jobs", jobSchema);
