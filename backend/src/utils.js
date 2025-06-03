@@ -24,7 +24,7 @@ const __dirname = path.dirname(__filename);
 
 export default __dirname;
 
-
+const secret = "test-guest-secret-change-me";
 
 
 
