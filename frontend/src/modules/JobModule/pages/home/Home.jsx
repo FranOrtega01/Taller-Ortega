@@ -1,3 +1,4 @@
+import React, {useEffect} from "react"
 import { Card, Col, Row, Typography, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import {
@@ -21,7 +22,7 @@ const Home = () => {
                     <Col xs={24} sm={12} md={8}>
                         <Card
                             title="Consultar trabajos"
-                            bordered
+                            variant="bordered"
                             actions={[
                                 <Button
                                     type="primary"
@@ -39,7 +40,7 @@ const Home = () => {
                     <Col xs={24} sm={12} md={8}>
                         <Card
                             title="Crear trabajo"
-                            bordered
+                            variant="bordered"
                             actions={[
                                 <Button
                                     type="primary"
@@ -57,7 +58,7 @@ const Home = () => {
                     <Col xs={24} sm={12} md={8}>
                         <Card
                             title="Estadísticas"
-                            bordered
+                            variant="bordered"
                             actions={[
                                 <Button
                                     icon={<BarChartOutlined />}

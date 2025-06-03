@@ -16,11 +16,20 @@ const jobSchema = new mongoose.Schema({
     },
     claims: {
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: "claims" }],
+        required: [
+            function(){
+                return (this.status !== JOB_STATUS_ENUM.PENDING.code && !this.isParticular)
+            }
+        ],
         default: [],
     },
     date: {
         type: Date,
         default: formatGMTm3(new Date()),
+    },
+    entryDate: {
+        type: Date,
+        default: null,
     },
     description: {
         type: String,
@@ -41,7 +50,7 @@ const jobSchema = new mongoose.Schema({
     },
     iva: {
         type: Number,
-        enum: [0, 21],
+        // enum: [0, 21],
         default: 0,
     },
     isParticular: {
@@ -56,6 +65,21 @@ const jobSchema = new mongoose.Schema({
     workPanels: workPanelsSchema,
     parts: {
         type: [partSchema],
+        default: [],
+    },
+    payments: {
+        type: [
+            {
+                date: Date,
+                amount: Number,
+                method: String,
+            },
+        ],
+        default: [],
+    },
+    associatedInvoices: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "invoices",
         default: [],
     },
     amps: {
@@ -87,5 +111,6 @@ const jobSchema = new mongoose.Schema({
         default: [],
     },
 });
+
 
 export default mongoose.model("jobs", jobSchema);

@@ -25,7 +25,6 @@ export default class VehicleRepository {
             throw handleError(error, "vehicles");
         }
     };
-
     create = async (data) => {
         try {
             const { owner } = data;

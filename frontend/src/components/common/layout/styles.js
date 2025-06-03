@@ -8,11 +8,8 @@ export const Inner = styled.div`
 `;
 
 export const Header = styled.div`
-    position: sticky;
-    top: 25px;
     background-color: white;
     z-index: 101;
-    padding-bottom: 1rem;
 `;
 
 export const Body = styled.div`
@@ -32,6 +29,11 @@ export const Aside = styled.aside``;
 
 export const Title = styled(TYPO.H1)`
     color: ${COLORS.SECONDARY};
+`;
+
+export const SubTitle = styled(TYPO.H2)`
+    color: ${COLORS.SECONDARY};
+    margin-block: 1rem;
 `;
 
 export const Breadcrumb = styled.div`

@@ -4,8 +4,9 @@ import { Inner, Main } from "./styles";
 import Layout from "../../../../components/common/layout";
 import Sidebar from "./sidebar/Sidebar";
 import { GeneralInformation } from "./main/components/general-information/GeneralInformation";
-import { Files } from "./main/components/files/Files";
-import { get_client_by_id } from "../../api/general/general";
+import { VehiclesInformation } from "./main/components/vehicles-information/VehiclesInformation";
+import { JobsInformation } from "./main/components/jobs-information/JobsInformation";
+import { get_client_by_id } from "../../../../services/api/general/general";
 import { Divider } from "antd";
 import Header from "./header/Header";
 
@@ -40,7 +41,10 @@ const View = () => {
                     {activeKey === "GeneralInfo" && (
                         <GeneralInformation id={id} data={client} />
                     )}
-                    {activeKey === "Files" && <Files id={id} data={client} />}
+                    {activeKey === "VehiclesInfo" && <VehiclesInformation id={id} data={client} />}
+
+                    {activeKey === "JobsInfo" && <JobsInformation id={id} data={client} />}
+
                 </Main>
             </Inner>
         </Layout>

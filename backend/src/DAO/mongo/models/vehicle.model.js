@@ -5,7 +5,6 @@ const vehicleSchema = new mongoose.Schema({
         type: String,
         unique: [true, "Ya hay un vehiculo con ese Dominio"],
         required: [true, "El Dominio es obligatorio"],
-        immutable: [true, "El Dominio no puede cambiarse"]
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,

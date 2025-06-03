@@ -12,6 +12,9 @@ export default class Company {
     getByCUIT = async (cuit) => {
         return await companyModel.findOne({ cuit }).lean().exec();
     };
+    getForDropdown = async () => {
+        return await companyModel.find().select("name cuit -_id").lean();
+    }
     create = async (data) => {
         return await companyModel.create(data);
     };

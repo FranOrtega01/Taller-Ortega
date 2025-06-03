@@ -27,7 +27,7 @@ export const PART_STATUS_ENUM = {
     REJECTED: { code: "REJECTED", name: "Rechazado" },
     WAITING: { code: "WAITING", name: "Esperando" },
     DELIVERING: { code: "DELIVERING", name: "En camino" },
-    DELIVERED: { code: "DELIVERED", name: "Aceptado" },
+    DELIVERED: { code: "DELIVERED", name: "Entregado" },
 };
 export const PART_STATUS_CODES = Object.keys(PART_STATUS_ENUM);
 
@@ -47,6 +47,26 @@ export const CLAIM_TYPE_ENUM = {
     AMP: { code: "AMP", name: "Ampliación" },
 };
 export const CLAIM_TYPE_CODES = Object.keys(CLAIM_TYPE_ENUM);
+
+export const INVOICE_STATUS_ENUM = {
+    ISSUED: { code: "ISSUED", name: "Emitida" },
+    SENT: { code: "SENT", name: "Enviada" },
+    PAID: { code: "PAID", name: "Cobrada" },
+    REJECTED: { code: "REJECTED", name: "Rechazada" },
+    CANCELED: { code: "CANCELED", name: "Anulada" },
+};
+
+export const INVOICE_STATUS_CODES = Object.keys(INVOICE_STATUS_ENUM);
+
+export const INVOICE_TYPE_ENUM = {
+    A: { code: "A", name: "Factura A" },
+    FCE: { code: "FCE", name: "Factura de Crédito Electrónica (FCE) A" },
+    NC: { code: "NC", name: "Nota de Crédito A" },
+    NCE: { code: "NCE", name: "Nota de Crédito Electrónica (FCE) A" },
+    B: { code: "B", name: "Factura B" },
+};
+
+export const INVOICE_TYPE_CODES = Object.keys(INVOICE_TYPE_ENUM);
 
 // =================================== Sub Schemas ===================================
 // -> Work Panel Item
@@ -91,7 +111,10 @@ export const partSchema = new mongoose.Schema(
             default: () => formatGMTm3(new Date()),
         },
         dateDelivered: Date,
-        price: Number,
+        price: {
+            type: Number,
+            default: 0,
+        },
     },
     { _id: false }
 );

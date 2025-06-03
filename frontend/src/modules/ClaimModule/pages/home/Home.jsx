@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { get_jobs } from "../../api/general/general";
+import { get_jobs } from "../../../../services/api/general/general";
 
 const Home = () => {
     const getJobs = async () => {

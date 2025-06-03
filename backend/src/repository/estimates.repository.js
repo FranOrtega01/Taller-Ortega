@@ -1,8 +1,7 @@
 import { handleError } from "./utils.js";
-export default class EstimateRepository{
-    
-    constructor(dao){
-        this.dao = dao
+export default class EstimateRepository {
+    constructor(dao) {
+        this.dao = dao;
     }
 
     get = async () => {
@@ -25,17 +24,17 @@ export default class EstimateRepository{
         }
     };
 
-    create = async (data) => {
+    create = async (data, options = {}) => {
         try {
-            return await this.dao.create(data);
+            return await this.dao.create(data, options);
         } catch (error) {
             throw handleError(error, "estimates");
         }
     };
 
-    update = async (id, data) => {
+    update = async (id, data, options = {}) => {
         try {
-            return await this.dao.update(id, data);
+            return await this.dao.update(id, data, options);
         } catch (error) {
             throw handleError(error, "estimates");
         }

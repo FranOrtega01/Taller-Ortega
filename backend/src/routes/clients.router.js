@@ -3,13 +3,13 @@ import { get, create, getById, update, deleteOne } from '../controller/clients.c
 
 const router = Router();
 
-router.get('/', get);
+router.get('/clients', get);
 
-router.get('/:id', getById);
+router.get('/client/:id', getById);
 
-router.post('/', create);
+router.post('/client', create);
 
-router.put('/:id', update);
+router.put('/client/:id', update);
 
 router.delete("/:id", deleteOne);
 

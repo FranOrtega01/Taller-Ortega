@@ -4,7 +4,22 @@ import mongoose from "mongoose";
 
 export const get = async (req, res) => {
     try {
-        const companies = await CompanyService.get();
+        const { format } = req.query;
+
+        let companies;
+
+        switch (format) {
+            case "dropdown":
+                companies = await CompanyService.getForDropdown();
+                break;
+            case undefined:
+            case null:
+                companies = await CompanyService.get();
+                break;
+            default:
+                return ErrorResponse(res, "Invalid format", 400);
+        }
+
         return SuccessResponse(res, companies);
     } catch (error) {
         return ErrorResponse(res, error);
@@ -35,6 +50,14 @@ export const getByID = async (req, res) => {
         ) {
             return SuccessResponse(res, {}, 204);
         }
+        return ErrorResponse(res, error);
+    }
+};
+
+export const getForDropdown = async (req, res) => {
+    try {
+        return SuccessResponse(res, companies);
+    } catch (error) {
         return ErrorResponse(res, error);
     }
 };

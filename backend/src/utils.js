@@ -1,4 +1,4 @@
-// import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 // import passport from 'passport'
 // import {fileURLToPath} from 'url'
 // import { dirname } from 'path'
@@ -13,10 +13,10 @@
 // import { PDFDocument } from 'pdf-lib';
 // import fs from 'fs';
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import PDFParser from 'pdf2json';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import PDFParser from "pdf2json";
 
 // Obtener __dirname en ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -24,6 +24,29 @@ const __dirname = path.dirname(__filename);
 
 export default __dirname;
 
+const obj = {
+    user: {
+        username: "guest",
+        first_name: "Guest",
+        last_name: "User",
+    },
+    resources: [
+        {
+            type: "dashboard",
+            id: "c219e656-71c3-4aeb-9663-3a2b876b2c94",
+        },
+    ],
+    rls: [],
+};
+
+// const secret = "test-guest-secret-change-me";
+
+// const token = jwt.sign(obj, secret, {
+//     algorithm: "HS256",
+//     expiresIn: "1h",
+// });
+// console.log("TOKEN: ", token);
+// console.log("Token decode: ", jwt.decode(token));
 const secret = "test-guest-secret-change-me";
 
 

@@ -4,16 +4,19 @@ import {
     getByLicense,
     create,
     update,
-    deleteOne
+    deleteOne,
+    getClientByLicensePlate
 } from "../controller/vehicles.controller.js";
 
 const router = Router();
 
-router.get("/", get);
+router.get("/vehicles", get);
 
-router.get("/:license", getByLicense);
+router.get("/vehicle/:license", getByLicense);
 
-router.post("/", create);
+router.get('/vehicle/:license/owner', getClientByLicensePlate)
+
+router.post("/vehicle", create);
 
 router.put("/:license", update);
 

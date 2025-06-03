@@ -9,6 +9,7 @@ import {
     BreadcrumbItem,
     BreadcrumbSeparator,
     Aside,
+    SubTitle
 } from "./styles.js";
 
 const Layout = ({ children, ...restProps }) => (
@@ -29,6 +30,10 @@ Layout.Aside = ({ children, ...restProps }) => {
 
 Layout.Title = ({ children, ...restProps }) => {
     return <Title {...restProps}>{children}</Title>;
+};
+
+Layout.SubTitle = ({ children, ...restProps }) => {
+    return <SubTitle {...restProps}>{children}</SubTitle>;
 };
 
 Layout.Breadcrumb = ({ children, ...restProps }) => {

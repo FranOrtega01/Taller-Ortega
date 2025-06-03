@@ -9,14 +9,15 @@ export default class Estimate {
     getByID = async (id) => {
         return await estimateModel.findOne({ _id: id }).lean().exec();
     };
-    create = async (data) => {
-        return await estimateModel.create(data);
+    create = async (data, options = {}) => {
+        const result = await estimateModel.create([data], options);
+        return result[0];
     };
-    update = async (id, data) => {
+    update = async (id, data, options = {}) => {
         return await estimateModel.updateOne(
             { _id: id },
             { $set: data },
-            { runValidators: true }
+            { runValidators: true, ...options }
         );
     };
     delete = async (id) => {

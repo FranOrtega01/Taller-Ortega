@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Table, Tag, Button } from "antd";
-import { get_clients } from "../../api/general/general";
+import { get_clients } from "../../../../services/api/general/general";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
