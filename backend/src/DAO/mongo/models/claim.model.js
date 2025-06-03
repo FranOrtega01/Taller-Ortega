@@ -20,7 +20,10 @@ const claimSchema = new mongoose.Schema({
         type: String,
         required: [
             function () {
-                return this.status !== CLAIM_STATUS_ENUM.PENDING.code && this.type === CLAIM_TYPE_ENUM.MAIN.code;
+                return (
+                    this.status !== CLAIM_STATUS_ENUM.PENDING.code &&
+                    this.type === CLAIM_TYPE_ENUM.MAIN.code
+                );
             },
             "El Número de Siniestro es requerido.",
         ],
@@ -34,9 +37,21 @@ const claimSchema = new mongoose.Schema({
         ref: "companies",
         required: [
             function () {
-                return this.status !== CLAIM_STATUS_ENUM.PENDING.code && this.type === CLAIM_TYPE_ENUM.MAIN.code;
+                return (
+                    this.status !== CLAIM_STATUS_ENUM.PENDING.code &&
+                    this.type === CLAIM_TYPE_ENUM.MAIN.code
+                );
             },
             "La Compañía es requerida",
+        ],
+    },
+    insured: {
+        type: String,
+        required: [
+            function () {
+                return this.status !== CLAIM_STATUS_ENUM.PENDING.code;
+            },
+            "El Asegurado es requerido",
         ],
     },
     amount: {
@@ -120,6 +135,11 @@ const claimSchema = new mongoose.Schema({
     },
     parts: {
         type: [partSchema],
+        default: [],
+    },
+    associatedInvoices: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "invoices",
         default: [],
     },
 });

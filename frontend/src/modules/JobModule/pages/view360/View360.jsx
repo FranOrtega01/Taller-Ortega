@@ -5,41 +5,89 @@ import Layout from "../../../../components/common/layout";
 import Sidebar from "./sidebar/Sidebar";
 import { GeneralInformation } from "./main/components/general-information/GeneralInformation";
 import { Files } from "./main/components/files/Files";
-import { get_job_by_id } from "../../api/general/general";
+import { Claims } from "./main/components/claims/Claims";
+import { Client } from "./main/components/client/Client";
+import { Invoices } from "./main/components/invoices/Invoices";
+import { Vehicle } from "./main/components/vehicle/Vehicle";
+import { get_job_by_id } from "../../../../services/api/general/general";
 import Header from "./header/Header";
+import SkeletonSidebar from "../../../../components/common/sidebar/skeleton-sidebar/SkeletonSidebar";
+import { Estimate } from "./main/components/estimate/Estimate";
+import { t } from "../../../../customHooks/useTranslation";
 
 const View = () => {
     const { id } = useParams();
     const [activeKey, setActiveKey] = useState("GeneralInfo");
     const [loading, setLoading] = useState(false);
     const [job, setJob] = useState(null);
+    const [sidebarLoaded, setSidebarLoaded] = useState(false);
+
+    const getJob = async () => {
+        try {
+            if (!sidebarLoaded) setLoading(true);
+            setLoading(true);
+            const job = await get_job_by_id(id);
+            console.log("JOB: ", job?.payload);
+            setSidebarLoaded(true);
+            setJob(job?.payload || {});
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const getJob = async () => {
-            try {
-                setLoading(true);
-                const job = await get_job_by_id(id);
-                setJob(job?.payload || {});
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(true);
-            }
-        };
-
         getJob();
     }, []);
 
+    const getBtnLabel = () => {
+        switch (job?.status?.code) {
+            case "PENDING":
+                return t("activate-lbl");
+            case "IN_PROGRESS":
+                return t("settle-lbl");
+            default:
+                return t("default-lbl");
+        }
+    };
+
     return (
         <Layout>
-            <Sidebar activeKey={activeKey} setActiveKey={setActiveKey} />
+            {!sidebarLoaded ? (
+                <SkeletonSidebar style={{ paddingTop: "7rem" }} lines={5} />
+            ) : (
+                <Sidebar
+                    isParticular={job?.isParticular}
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
+                />
+            )}
             <Layout.Body>
-                <Header data={job} />
+                <Header getBtnLabel={getBtnLabel} data={job} />
                 <Main>
                     {activeKey === "GeneralInfo" && (
-                        <GeneralInformation id={id} data={job} />
+                        <GeneralInformation
+                            refreshData={getJob}
+                            id={id}
+                            data={job}
+                        />
                     )}
+
+                    {activeKey === "Estimate" && (
+                        <Estimate id={id} data={job} />
+                    )}
+
                     {activeKey === "Files" && <Files id={id} data={job} />}
+
+                    {activeKey === "Claims" && <Claims id={id} data={job} />}
+
+                    {activeKey === "Client" && <Client id={id} data={job} />}
+
+                    {activeKey === "Invoices" && (
+                        <Invoices id={id} data={job} />
+                    )}
+                    {activeKey === "Vehicle" && <Vehicle id={id} data={job} />}
                 </Main>
             </Layout.Body>
         </Layout>

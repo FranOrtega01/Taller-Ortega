@@ -8,7 +8,7 @@ export const InnerSidebar = styled.div`
     justify-content: flex-start;
     align-items: flex-end;
     padding-right: 0;
-    background: ${COLORS.BACK};
+    background: ${COLORS.BACKGROUND_ALT};
     height: 100%;
     & .ant-tabs-tab-active {
         background-color: ${COLORS.WHITE};
@@ -79,7 +79,7 @@ export const InnerSidebarSteps = styled.div`
     align-items: flex-start;
     padding-inline: 1rem;
 
-    background: ${COLORS.BACK};
+    background: ${COLORS.BACKGROUND_ALT};
     height: 100%;
     width: 200px;
     overflow-y: auto;

@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Tabs } from "antd";
 import { GoBackLink, Inner, Title, Container } from "./styles";
 import { useNavigate } from "react-router-dom";
-
+import {t} from "../../../../../customHooks/useTranslation"
 const Sidebar = ({ activeKey, setActiveKey }) => {
     const [tabItems, setTabItems] = useState([]);
     const navigate = useNavigate();
     useEffect(() => {
         setTabItems([
-            { label: "General Information", key: "GeneralInfo" },
+            { label: t("general-information-lbl"), key: "GeneralInfo" },
+            { label: t("vehicles-information-lbl"), key: "VehiclesInfo" },
+            { label: t("jobs-information-lbl"), key: "JobsInfo" },
         ]);
     }, []);
 

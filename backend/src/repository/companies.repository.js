@@ -37,6 +37,15 @@ export default class CompanyRepository {
         }
     };
 
+    getForDropdown = async () => {
+        try {
+            const company = await this.dao.getForDropdown();
+            return company;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    };
+
     create = async (data) => {
         try {
             return await this.dao.create(data);

@@ -62,4 +62,12 @@ export default class ClaimRepository {
             throw new Error(error.message);
         }
     };
+
+    attachInvoice = async (id, invoiceId, options = {}) => {
+        try {
+            return await this.dao.attachInvoice(id, invoiceId, options);
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    };
 }

@@ -6,3 +6,4 @@ export const ModeSelector = styled.div`
     padding: 1rem;
     gap: 1rem;
 `;
+

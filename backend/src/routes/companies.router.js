@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { get, create, update, getByID, deleteOne } from '../controller/companies.controller.js';
+import { get, create, update, getByID, deleteOne, getForDropdown} from '../controller/companies.controller.js';
 
 const router = Router();
 
-router.get('/', get);
+router.get('/companies', get);
 
-router.get('/:id', getByID);
+router.get('/company/:id', getByID);
 
 router.post('/', create);
 

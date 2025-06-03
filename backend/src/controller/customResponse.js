@@ -28,3 +28,8 @@ export function formatLicensePlate(lic){
         return ""
     }
 }
+
+export const validateFilters = (query, allowed,) => {
+    const invalid = Object.keys(query).filter(key => !allowed.includes(key));
+    return invalid
+};

@@ -16,7 +16,10 @@ export const getById = async (req, res) => {
         const client = await ClientService.getById(id);
         return SuccessResponse(res, client);
     } catch (error) {
-        if (error.message === "Cliente no encontrado" || error?.errorMessages?.[0] === "Cliente no encontrado" ) {
+        if (
+            error.message === "Cliente no encontrado" ||
+            error?.errorMessages?.[0] === "Cliente no encontrado"
+        ) {
             return SuccessResponse(res, {}, 204);
         }
         return ErrorResponse(res, error);

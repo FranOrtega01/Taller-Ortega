@@ -14,7 +14,6 @@ export default class Vehicle {
             .lean()
             .exec();
     };
-
     create = async (data) => {
         return await vehicleModel.create(data);
     };

@@ -1,5 +1,9 @@
 import mongoose from "mongoose";
-import { ESTIMATE_STATUS_ENUM,ESTIMATE_STATUS_CODES, formatGMTm3 } from "./utils.js";
+import {
+    ESTIMATE_STATUS_ENUM,
+    ESTIMATE_STATUS_CODES,
+    formatGMTm3,
+} from "./utils.js";
 
 const estimateSchema = new mongoose.Schema({
     creationDate: {
@@ -28,6 +32,11 @@ const estimateSchema = new mongoose.Schema({
             },
         ],
         default: [],
+    },
+    job: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "jobs",
+        default: null,
     },
 });
 
