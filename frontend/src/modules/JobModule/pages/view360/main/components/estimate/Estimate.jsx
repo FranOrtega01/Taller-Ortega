@@ -63,7 +63,7 @@ export const Estimate = ({ data }) => {
             ) : (
                 <>
                     <span>{t("no-estimate-lbl")}</span>
-                    <Button type="primary" ghost>+{t("upload-estimate-lbl")}</Button>
+                    <Button type="link" >+{t("upload-estimate-lbl")}</Button>
                 </>
             )}
         </>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { get_all_job_invoices } from "../../../../../../../services/api/general/general";
 import { Table, Tag } from "antd";
-import moment from "moment"
+import dayjs from "dayjs";
+import { formatNumberES } from "../../../../../../../services/utils";
 
 export const Invoices = ({ id, data }) => {
     const [invoices, setInvoices] = useState([]);
@@ -36,24 +37,24 @@ export const Invoices = ({ id, data }) => {
             title: "Date",
             dataIndex: "issueDate",
             key: "issueDate",
-            render: (date) => moment(date).format("DD/MM/YY"),
+            render: (date) => dayjs(date).format("DD/MM/YY"),
         },
-        {
-            title: "Amount",
-            dataIndex: "amount",
-            key: "amount",
-            render: (amount) => `$${amount.toFixed(2)}`,
-        },
-        {
-            title: "IVA",
-            dataIndex: "iva",
-            key: "iva",
-            render: (iva) => `$${iva.toFixed(2)}`,
-        },
+        // {
+        //     title: "Amount",
+        //     dataIndex: "amount",
+        //     key: "amount",
+        //     render: (amount) => `$${formatNumberES(amount)}`,
+        // },
+        // {
+        //     title: "IVA",
+        //     dataIndex: "iva",
+        //     key: "iva",
+        //     render: (iva) => `$${formatNumberES(iva)}`,
+        // },
         {
             title: "Total",
             key: "total",
-            render: (record) => `$${(record.amount + record.iva).toFixed(2)}`,
+            render: (record) => `$${formatNumberES(record.amount + record.iva)}`,
         },
         {
             title: "Paid Amount",
@@ -63,7 +64,7 @@ export const Invoices = ({ id, data }) => {
                     (sum, p) => sum + (p.amount || 0),
                     0
                 );
-                return `$${paid.toFixed(2)}`;
+                return `$${formatNumberES(paid)}`;
             },
         },
         {

@@ -1,9 +1,22 @@
 import React, { useEffect } from "react";
-import { Button, Col, Form, Input, Row, DatePicker } from "antd";
-import { PlusCircleOutlined } from "@ant-design/icons";
+import {
+    Button,
+    Col,
+    Form,
+    Input,
+    Row,
+    DatePicker,
+    Space,
+    InputNumber,
+    Flex,
+} from "antd";
+// import { PlusCircleOutlined } from "@ant-design/icons";
 import FloatingLabel from "../../../../../../components/common/floatingLabel/FloatingLabel";
 import { useJob } from "../../../../contexts/jobContext";
 import { t } from "../../../../../../customHooks/useTranslation";
+import { formatNumberES } from "../../../../../../services/utils";
+import { TextSpan } from "../../styles";
+import { CustomInputNumber } from "../../../../../../components/common/theme/inputs/custom-input-number/CustomInputNumber";
 
 const panels = ["bodyWork", "paintWork", "glassWork", "otherWork"];
 
@@ -46,7 +59,7 @@ export const JobData = () => {
             <h3>Trabajo Particular</h3>
 
             <Row gutter={16}>
-                <Col span={8}>
+                <Col span={6}>
                     <FloatingLabel label="Fecha" value={formValues?.date}>
                         <Form.Item name="date">
                             <DatePicker
@@ -58,7 +71,7 @@ export const JobData = () => {
                     </FloatingLabel>
                 </Col>
 
-                <Col span={8}>
+                <Col span={6}>
                     <FloatingLabel
                         label="Fecha Ingreso"
                         value={formValues?.entryDate}
@@ -73,7 +86,7 @@ export const JobData = () => {
                     </FloatingLabel>
                 </Col>
 
-                <Col span={8}>
+                <Col span={6}>
                     <FloatingLabel
                         label="Descripción General"
                         value={formValues?.description}
@@ -111,7 +124,7 @@ export const JobData = () => {
                 </Col>
             </Row>
 
-            <h4>Repuestos</h4>
+            {/* <h4>Repuestos</h4>
             <Form.List name="parts">
                 {(fields, { add }) => (
                     <>
@@ -181,33 +194,68 @@ export const JobData = () => {
                         </Button>
                     </>
                 )}
-            </Form.List>
+            </Form.List> */}
 
             <h4>Paños</h4>
-            {panels.map((p, index) => (
-                <Row gutter={16} key={index}>
-                    <Col span={4}>
-                        <FloatingLabel
-                            label={`Cantidad ${t(p)}`}
-                            value={formValues?.panels?.[index]?.quantity}
-                        >
-                            <Form.Item name={["panels", index, "quantity"]}>
-                                <Input type="number" />
-                            </Form.Item>
-                        </FloatingLabel>
-                    </Col>
-                    <Col span={4}>
-                        <FloatingLabel
-                            label="Valor"
-                            value={formValues?.panels?.[index]?.amount}
-                        >
-                            <Form.Item name={["panels", index, "amount"]}>
-                                <Input type="number" />
-                            </Form.Item>
-                        </FloatingLabel>
-                    </Col>
-                </Row>
-            ))}
+            <Flex vertical gap={"middle"}>
+                {panels.map((p, index) => (
+                    <Row gutter={[16, 16]} key={index} align="middle">
+                        <Col span={4}>
+                            <span>{t(p)}</span>
+                        </Col>
+
+                        <Col span={6}>
+                            <Space.Compact style={{ width: "100%" }}>
+                                <Form.Item
+                                    name={["panels", index, "quantity"]}
+                                    noStyle
+                                    rules={[
+                                        {
+                                            required: formValues?.panels?.[index]?.amount > 0,
+                                            message: t("field-required-lbl"),
+                                        },
+                                    ]}
+                                >
+                                    <InputNumber
+                                        min={0}
+                                        addonBefore="#"
+                                        style={{ width: "30%" }}
+                                    />
+                                </Form.Item>
+
+                                <Form.Item
+                                    name={["panels", index, "amount"]}
+                                    noStyle
+                                    rules={[
+                                        {
+                                            required: formValues?.panels?.[index]?.quantity > 0,
+                                            message: t("field-required-lbl"),
+                                        },
+                                    ]}
+                                >
+                                    <CustomInputNumber
+                                        min={0}
+                                        style={{ width: "70%" }}
+                                        addonBefore="$"
+                                    />
+                                </Form.Item>
+                            </Space.Compact>
+                        </Col>
+
+                        <Col span={4}>
+                            <TextSpan>
+                                $
+                                {formatNumberES(
+                                    (formValues?.panels?.[index]?.quantity ||
+                                        0) *
+                                        (formValues?.panels?.[index]?.amount ||
+                                            0)
+                                )}
+                            </TextSpan>
+                        </Col>
+                    </Row>
+                ))}
+            </Flex>
             <Footer />
         </Form>
     );

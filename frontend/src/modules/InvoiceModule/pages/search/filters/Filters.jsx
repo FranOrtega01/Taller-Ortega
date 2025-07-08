@@ -48,7 +48,9 @@ export const Filters = ({ setFilters, loading }) => {
         console.log("form values: ", values);
 
         const filters = {
-            invoiceNumber: values.invoiceNumber || undefined,
+            invoiceNumber: values.invoiceNumber
+                ? `0${values.invoiceNumber}`
+                : undefined,
             code: values.invoiceType || undefined,
             status: values.invoiceStatus || undefined,
             cuit: values.cuit || undefined,
@@ -90,6 +92,7 @@ export const Filters = ({ setFilters, loading }) => {
                         <Form.Item name="invoiceType">
                             <Select
                                 style={{ width: "100%" }}
+                                allowClear
                                 options={invoicesTypes.map((type) => ({
                                     label: type.name,
                                     value: type.code,
@@ -108,6 +111,7 @@ export const Filters = ({ setFilters, loading }) => {
                     >
                         <Form.Item name="invoiceStatus">
                             <Select
+                                allowClear
                                 style={{ width: "100%" }}
                                 options={invoicesStatuses.map((status) => ({
                                     label: status.name,
@@ -126,6 +130,7 @@ export const Filters = ({ setFilters, loading }) => {
                     >
                         <Form.Item name="invoiceDate">
                             <RangePicker
+                                allowClear
                                 format={"DD/MM/YY"}
                                 placeholder={""}
                                 style={{ width: "100%" }}
@@ -173,11 +178,18 @@ export const Filters = ({ setFilters, loading }) => {
                         </Form.Item>
                     </FloatingLabel>
                 </Col>
+                <Col style={{ marginLeft: "auto" }} span={3}>
+                    <Button
+                        style={{ marginLeft: "auto", width: "100%" }}
+                        disabled={loading}
+                        type="primary"
+                        ghost
+                        htmlType="submit"
+                    >
+                        Buscar
+                    </Button>
+                </Col>
             </Row>
-
-            <Button disabled={loading} type="primary" ghost htmlType="submit">
-                Buscar
-            </Button>
         </Form>
     );
 };

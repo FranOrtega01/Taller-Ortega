@@ -7,6 +7,7 @@ export default function FloatingLabel({
     value,
     children,
     hint,
+    hasPrefix,
     ...restProps
 }) {
     const ref = useRef();
@@ -36,7 +37,9 @@ export default function FloatingLabel({
         >
             <Tooltip title={hint} placement="left" zIndex={999}>
                 {children}
-                <Label $hasFocus={value || onFocus}>{label}</Label>
+                <Label $hasPrefix={hasPrefix} $hasFocus={value || value === 0 || onFocus}>
+                    {label}
+                </Label>
             </Tooltip>
         </Inner>
     );

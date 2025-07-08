@@ -47,4 +47,12 @@ export default class InvoiceRepository {
             throw handleError(error, "invoices");
         }
     };
+
+    setInvoicePayments = async (id, data, options = {}) => {
+        try {
+            return await this.dao.setInvoicePayments(id, data, options);
+        } catch (error) {
+            throw handleError(error, "invoices");
+        }
+    };
 }

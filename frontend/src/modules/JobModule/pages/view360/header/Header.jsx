@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../../../../components/common/layout";
-import { Divider, Row, Col, Tag, Button } from "antd";
+import { Divider, Row, Col, Tag, Button, Spin} from "antd";
 import {
     formatLicense,
     formatDate,
     jobIsCompanyColor,
 } from "../../../../../services/utils";
 
-const Header = ({ data, getBtnLabel }) => {
+const Header = ({ data, btnAction, getBtnLabel, getStatusLabel }) => {
     return (
         <Layout.Header>
             <Row>
@@ -28,12 +28,8 @@ const Header = ({ data, getBtnLabel }) => {
                     </Tag>
                 </Col>
                 <Col>
-                    <Tag
-                        color={"gold"}
-                    >
-                        {data?.status?.name}
-                    </Tag>
-                    <Button>{getBtnLabel(data)}</Button>
+                    <Tag color={"gold"}>{getStatusLabel()}</Tag>
+                    <Button onClick={btnAction}>{getBtnLabel()}</Button>
                 </Col>
             </Row>
             <Divider />

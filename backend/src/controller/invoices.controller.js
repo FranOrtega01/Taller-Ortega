@@ -121,12 +121,16 @@ export const create = async (req, res) => {
         );
     }
 
+    console.log("reqbody: ", req.body);
+
     if (!req.body.claimId && !req.body.jobId) {
         // factura libre, válida
     }
     const session = await mongoose.startSession();
 
     try {
+        session.startTransaction();
+
         const { claimId, jobId } = req.body;
         let claim, job;
 
@@ -148,6 +152,7 @@ export const create = async (req, res) => {
             cuit,
             amount,
             iva,
+            fiscalName,
         } = req.body;
         const invoiceData = {
             code,
@@ -157,6 +162,7 @@ export const create = async (req, res) => {
             caeNumber,
             caeDate,
             description: description || "",
+            fiscalName: fiscalName || "-",
             cuit,
             amount,
             iva,
@@ -165,24 +171,25 @@ export const create = async (req, res) => {
         };
         console.log("invoiceData: ", invoiceData);
         // Session
-        session.startTransaction();
 
         // Create Invoice
         const invoice = await InvoiceService.create(invoiceData, { session });
 
         // Attach Inovice to Job / Claim
         if (claimId) {
-            await ClaimService.attachInvoice(claimId, invoice._id);
+            await ClaimService.attachInvoice(claimId, invoice._id, { session });
         }
 
         if (jobId) {
-            await JobService.attachInvoice(jobId, invoice._id);
+            await JobService.attachInvoice(jobId, invoice._id, { session });
         }
 
         await session.commitTransaction();
         session.endSession();
         return SuccessResponse(res, invoice);
     } catch (error) {
+        console.log("ERROR: ", error);
+
         console.log("ABORTED");
         await session.abortTransaction();
         session.endSession();
@@ -208,6 +215,29 @@ export const deleteOne = async (req, res) => {
         const { id } = req.params;
         await InvoiceService.delete(id);
         return SuccessResponse(res);
+    } catch (error) {
+        return ErrorResponse(res, error);
+    }
+};
+
+export const setInvoicePayments = async (req, res) => {
+    if (!req.body.payments) {
+        return ErrorResponse(res, "Debe asignarse al menos un pago", 400);
+    }
+
+    try {
+        const { id } = req.params;
+        const data = {
+            payments: req.body.payments?.map((p) => ({
+                date: p.date,
+                amount: p.amount,
+                method: p.method,
+            })),
+            status: INVOICE_STATUS_ENUM.PAID.code,
+        };
+
+        await InvoiceService.setInvoicePayments(id, data);
+        return SuccessResponse(res, {}, 200);
     } catch (error) {
         return ErrorResponse(res, error);
     }

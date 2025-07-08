@@ -20,7 +20,7 @@ const Home = () => {
                 <Row gutter={[16, 16]}>
                     <Col xs={24} sm={12} md={8}>
                         <Card
-                            title="Consultar companias"
+                            title="Consultar comprobantes"
                             variant="bordered"
                             actions={[
                                 <Button
@@ -32,13 +32,13 @@ const Home = () => {
                                 </Button>,
                             ]}
                         >
-                            Visualizá y gestioná companias existentes.
+                            Visualizá y gestioná comprobantes existentes.
                         </Card>
                     </Col>
 
                     <Col xs={24} sm={12} md={8}>
                         <Card
-                            title="Crear compania"
+                            title="Cargar comprobante"
                             variant="bordered"
                             actions={[
                                 <Button
@@ -46,11 +46,11 @@ const Home = () => {
                                     icon={<PlusCircleOutlined />}
                                     onClick={() => navigate("create")}
                                 >
-                                    Nuevo trabajo
+                                    Nuevo Comprobante
                                 </Button>,
                             ]}
                         >
-                            Cargá un nuevo trabajo con su vehículo y siniestro.
+                            Cargá un nuevo comprobante.
                         </Card>
                     </Col>
 

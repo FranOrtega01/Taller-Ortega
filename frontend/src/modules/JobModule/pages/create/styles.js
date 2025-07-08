@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import COLORS from "../../../../components/common/theme/colors";
 
 export const ModeSelector = styled.div`
     display: flex;
@@ -7,3 +8,6 @@ export const ModeSelector = styled.div`
     gap: 1rem;
 `;
 
+export const TextSpan = styled.span`
+    color: ${COLORS.BLACK_DISABLED}
+`

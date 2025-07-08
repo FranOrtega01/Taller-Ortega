@@ -18,10 +18,7 @@ const jobSchema = new mongoose.Schema({
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: "claims" }],
         required: [
             function () {
-                return (
-                    this.status !== JOB_STATUS_ENUM.PENDING.code &&
-                    !this.isParticular
-                );
+                return !this.isParticular;
             },
         ],
         default: [],
@@ -37,6 +34,7 @@ const jobSchema = new mongoose.Schema({
             function () {
                 return this.status !== JOB_STATUS_ENUM.PENDING.code;
             },
+            "La fecha de ingreso es obligatoria"
         ],
     },
     description: {
@@ -51,20 +49,21 @@ const jobSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "estimates",
         default: null,
+        // required: [
+        //     function () {
+        //         return this.status !== JOB_STATUS_ENUM.PENDING.code;
+        //     },
+        // ],
+    },
+    amount: {
+        type: Number,
+        min: [1, "El monto debe ser mayor a 0"],
         required: [
             function () {
                 return this.status !== JOB_STATUS_ENUM.PENDING.code;
             },
+            "El monto es obligatorio"
         ],
-    },
-    amount: {
-        type: Number,
-        default: 0,
-    },
-    iva: {
-        type: Number,
-        // enum: [0, 21],
-        default: 0,
     },
     isParticular: {
         type: Boolean,
@@ -78,16 +77,6 @@ const jobSchema = new mongoose.Schema({
     workPanels: workPanelsSchema,
     parts: {
         type: [partSchema],
-        default: [],
-    },
-    payments: {
-        type: [
-            {
-                date: Date,
-                amount: Number,
-                method: String,
-            },
-        ],
         default: [],
     },
     associatedInvoices: {

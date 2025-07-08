@@ -23,6 +23,24 @@ export default class ClaimRepository {
             throw new Error(error.message);
         }
     };
+
+    getAmpsByParent = async (parentId) => {
+        try {
+            return await this.dao.getAmpsByParent(parentId);
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    };
+
+    getAllClaimsForJob = async (id) => {
+        try {
+            const claims = await this.dao.getAllClaimsForJob(id);
+            return claims;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    };
+
     create = async (data, options = {}) => {
         try {
             return await this.dao.create(data, options);

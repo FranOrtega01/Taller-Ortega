@@ -7,6 +7,7 @@ import {
     deleteOne,
     getStatuses,
     getTypes,
+    setInvoicePayments
 } from "../controller/invoices.controller.js";
 
 const router = Router();
@@ -19,10 +20,12 @@ router.get("/invoices/invoice-statuses", getStatuses);
 
 router.get("/invoices/invoice-types", getTypes);
 
-router.post("/", create);
+router.post("/invoice", create);
 
-router.put("/:id", update);
+router.post("/invoice/:id/payments", setInvoicePayments)
 
-router.delete("/:id", deleteOne);
+router.put("/invoice/:id", update);
+
+router.delete("/invoice/:id", deleteOne);
 
 export default router;

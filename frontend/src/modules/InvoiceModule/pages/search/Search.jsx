@@ -1,396 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Table, Tag, Button } from "antd";
+import { Table, Tag, Button, Flex, Tooltip, Modal } from "antd";
 import { get_invoices } from "../../../../services/api/general/general";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import Layout from "../../../../components/common/layout";
 import { Dot } from "../../../../components/common/dot/Dot";
 import {
+    formatCUIT,
+    formatNumberES,
     invoicePaymentStatusColor,
     invoiceStatusColor,
+    formatLicense,
 } from "../../../../services/utils";
 import { Filters } from "./filters/Filters";
-const mockInvoices = [
-    {
-        _id: "AS",
-        number: "03",
-        posNumber: "01",
-        issueDate: "2023-05-26T03:00:00.000Z",
-        caeNumber: "01",
-        caeDate: "2025-05-26T03:00:00.000Z",
-        description: "teset",
-        cuit: "409000",
-        amount: 350,
-        iva: 27,
-        job: null,
-        claim: "67ee07edbeffd14914c15510",
-        payments: [
-            {
-                amount: 100,
-                date: "2025-05-26T03:00:00.000Z",
-                method: "CASH",
-            },
-        ],
-        __v: 0,
-        code: {
-            code: "A",
-            name: "Factura A",
-        },
-        status: {
-            code: "PAID",
-            name: "Cobrada",
-        },
-    },
-    {
-        _id: "ASD",
-        number: "03",
-        posNumber: "01",
-        issueDate: "2025-05-26T03:00:00.000Z",
-        caeNumber: "01",
-        caeDate: "2025-05-26T03:00:00.000Z",
-        description: "teset",
-        cuit: "409000",
-        amount: 350,
-        iva: 27,
-        job: null,
-        claim: "67ee07edbeffd14914c15510",
-        payments: [
-            {
-                amount: 100,
-                date: "2025-05-26T03:00:00.000Z",
-                method: "CASH",
-            },
-        ],
-        __v: 0,
-        code: {
-            code: "A",
-            name: "Factura A",
-        },
-        status: {
-            code: "PAID",
-            name: "Cobrada",
-        },
-    },
-
-    {
-        _id: "ADF",
-        number: "03",
-        posNumber: "01",
-        issueDate: "2025-05-26T03:00:00.000Z",
-        caeNumber: "01",
-        caeDate: "2025-05-26T03:00:00.000Z",
-        description: "teset",
-        cuit: "409000",
-        amount: 350,
-        iva: 27,
-        job: null,
-        claim: "67ee07edbeffd14914c15510",
-        payments: [
-            {
-                amount: 100,
-                date: "2025-05-26T03:00:00.000Z",
-                method: "CASH",
-            },
-        ],
-        __v: 0,
-        code: {
-            code: "A",
-            name: "Factura A",
-        },
-        status: {
-            code: "PAID",
-            name: "Cobrada",
-        },
-    },
-    {
-        _id: "6ASDGf",
-        number: "03",
-        posNumber: "01",
-        issueDate: "2025-05-26T03:00:00.000Z",
-        caeNumber: "01",
-        caeDate: "2025-05-26T03:00:00.000Z",
-        description: "teset",
-        cuit: "409000",
-        amount: 350,
-        iva: 27,
-        job: null,
-        claim: "67ee07edbeffd14914c15510",
-        payments: [
-            {
-                amount: 100,
-                date: "2025-05-26T03:00:00.000Z",
-                method: "CASH",
-            },
-        ],
-        __v: 0,
-        code: {
-            code: "A",
-            name: "Factura A",
-        },
-        status: {
-            code: "PAID",
-            name: "Cobrada",
-        },
-    },
-    {
-        _id: "6ASDF8b54812f",
-        number: "03",
-        posNumber: "01",
-        issueDate: "2025-05-26T03:00:00.000Z",
-        caeNumber: "01",
-        caeDate: "2025-05-26T03:00:00.000Z",
-        description: "teset",
-        cuit: "409000",
-        amount: 350,
-        iva: 27,
-        job: null,
-        claim: "67ee07edbeffd14914c15510",
-        payments: [
-            {
-                amount: 100,
-                date: "2025-05-26T03:00:00.000Z",
-                method: "CASH",
-            },
-        ],
-        __v: 0,
-        code: {
-            code: "A",
-            name: "Factura A",
-        },
-        status: {
-            code: "PAID",
-            name: "Cobrada",
-        },
-    },
-    {
-        _id: "SDFASDG",
-        number: "01",
-        posNumber: "01",
-        issueDate: "2001-01-01T03:00:00.000Z",
-        caeNumber: "01",
-        caeDate: "2001-01-01T03:00:00.000Z",
-        description: "teset",
-        cuit: "409000",
-        amount: 350,
-        iva: 27,
-        job: null,
-        claim: null,
-        payments: [],
-        __v: 0,
-        code: {
-            code: "A",
-            name: "Factura A",
-        },
-        status: {
-            code: "REJECTED",
-            name: "Rechazada",
-        },
-    },
-    {
-        _id: "682e6dASDGASDG8b54812f",
-        number: "03",
-        posNumber: "01",
-        issueDate: "2025-05-26T03:00:00.000Z",
-        caeNumber: "01",
-        caeDate: "2025-05-26T03:00:00.000Z",
-        description: "teset",
-        cuit: "409000",
-        amount: 350,
-        iva: 27,
-        job: null,
-        claim: "67ee07edbeffd14914c15510",
-        payments: [
-            {
-                amount: 100,
-                date: "2025-05-26T03:00:00.000Z",
-                method: "CASH",
-            },
-        ],
-        __v: 0,
-        code: {
-            code: "A",
-            name: "Factura A",
-        },
-        status: {
-            code: "PAID",
-            name: "Cobrada",
-        },
-    },
-    {
-        _id: "682e6d46ASDGe3e1f59",
-        number: "02",
-        posNumber: "01",
-        issueDate: "2025-04-23T03:00:00.000Z",
-        caeNumber: "01",
-        caeDate: "2025-05-26T03:00:00.000Z",
-        description: "teset",
-        cuit: "409000",
-        amount: 350,
-        iva: 27,
-        job: null,
-        claim: null,
-        payments: [],
-        __v: 0,
-        code: {
-            code: "A",
-            name: "Factura A",
-        },
-        status: {
-            code: "CANCELED",
-            name: "Anulada",
-        },
-    },
-    {
-        _id: "682eASDGASDGdfb4e3e1f59",
-        number: "02",
-        posNumber: "01",
-        issueDate: "2025-04-23T03:00:00.000Z",
-        caeNumber: "01",
-        caeDate: "2025-05-26T03:00:00.000Z",
-        description: "teset",
-        cuit: "409000",
-        amount: 350,
-        iva: 27,
-        job: null,
-        claim: null,
-        payments: [],
-        __v: 0,
-        code: {
-            code: "A",
-            name: "Factura A",
-        },
-        status: {
-            code: "CANCELED",
-            name: "Anulada",
-        },
-    },
-    {
-        _id: "682e6ASDGb54812f",
-        number: "03",
-        posNumber: "01",
-        issueDate: "2025-05-26T03:00:00.000Z",
-        caeNumber: "01",
-        caeDate: "2025-05-26T03:00:00.000Z",
-        description: "teset",
-        cuit: "409000",
-        amount: 350,
-        iva: 27,
-        job: null,
-        claim: "67ee07edbeffd14914c15510",
-        payments: [],
-        __v: 0,
-        code: {
-            code: "A",
-            name: "Factura A",
-        },
-        status: {
-            code: "ISSUED",
-            name: "Emitida",
-        },
-    },
-    {
-        _id: "682ASDGGS98b54812f",
-        number: "03",
-        posNumber: "01",
-        issueDate: "2025-05-26T03:00:00.000Z",
-        caeNumber: "01",
-        caeDate: "2025-05-26T03:00:00.000Z",
-        description: "teset",
-        cuit: "409000",
-        amount: 350,
-        iva: 27,
-        job: null,
-        claim: "67ee07edbeffd14914c15510",
-        payments: [],
-        __v: 0,
-        code: {
-            code: "A",
-            name: "Factura A",
-        },
-        status: {
-            code: "ISSUED",
-            name: "Emitida",
-        },
-    },
-    {
-        _id: "682e6dASDGASDG812f",
-        number: "03",
-        posNumber: "01",
-        issueDate: "2025-05-26T03:00:00.000Z",
-        caeNumber: "01",
-        caeDate: "2025-05-26T03:00:00.000Z",
-        description: "teset",
-        cuit: "409000",
-        amount: 350,
-        iva: 27,
-        job: null,
-        claim: "67ee07edbeffd14914c15510",
-        payments: [
-            {
-                amount: 100,
-                date: "2025-05-26T03:00:00.000Z",
-                method: "CASH",
-            },
-        ],
-        __v: 0,
-        code: {
-            code: "A",
-            name: "Factura A",
-        },
-        status: {
-            code: "PAID",
-            name: "Cobrada",
-        },
-    },
-    {
-        _id: "682eASDGASDGAS812f",
-        number: "03",
-        posNumber: "01",
-        issueDate: "2025-05-26T03:00:00.000Z",
-        caeNumber: "01",
-        caeDate: "2025-05-26T03:00:00.000Z",
-        description: "teset",
-        cuit: "409000",
-        amount: 350,
-        iva: 27,
-        job: null,
-        claim: "67ee07edbeffd14914c15510",
-        payments: [],
-        __v: 0,
-        code: {
-            code: "A",
-            name: "Factura A",
-        },
-        status: {
-            code: "ISSUED",
-            name: "Emitida",
-        },
-    },
-    {
-        _id: "682e6dea892c98498b54812f",
-        number: "03",
-        posNumber: "01",
-        issueDate: "2025-05-26T03:00:00.000Z",
-        caeNumber: "01",
-        caeDate: "2025-05-26T03:00:00.000Z",
-        description: "teset",
-        cuit: "409000",
-        amount: 350,
-        iva: 27,
-        job: null,
-        claim: "67ee07edbeffd14914c15510",
-        payments: [],
-        __v: 0,
-        code: {
-            code: "A",
-            name: "Factura A",
-        },
-        status: {
-            code: "ISSUED",
-            name: "Emitida",
-        },
-    },
-];
+import { InvoicePaymentsModal } from "./components/invoice-payments-modal/InvoicePaymensModal";
+import { t } from "../../../../customHooks/useTranslation";
 
 const Search = () => {
     const [invoices, setInvoices] = useState([]);
@@ -400,6 +24,7 @@ const Search = () => {
     const [pageSize, setPageSize] = useState(20);
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({});
+    const [paymentModal, setPaymentModal] = useState(null);
 
     const fetchInvoices = async (
         currentPage = page,
@@ -412,6 +37,8 @@ const Search = () => {
             currentPageSize,
             currentFilters
         );
+        console.log(data);
+
         setInvoices(formatInvoices(data?.payload?.data || []));
         setTotalItems(data?.payload?.totalItems || 0);
         setLoading(false);
@@ -428,6 +55,17 @@ const Search = () => {
         }));
     };
 
+    const getDays = (date) => {
+        const today = moment();
+        const issuedDate = moment(date);
+        return today.diff(issuedDate, "days");
+    };
+
+    const handleOriginNavigation = (record) => {
+        if (record?.origin?.type === "JOB")
+            navigate(`/trabajos/view/${record?.origin?.data.id}`);
+    };
+
     useEffect(() => {
         fetchInvoices();
     }, [page, pageSize, filters]);
@@ -439,14 +77,39 @@ const Search = () => {
             width: 20,
             align: "center",
             render: (_, record) => (
-                <Dot
-                    size={12}
-                    color={invoicePaymentStatusColor(
-                        record.issueDate,
-                        record.paidAmount
-                    )}
-                />
+                <Tooltip
+                    title={
+                        !record.paidAmount
+                            ? `${"since-lbl"} ${getDays(record.issueDate)} ${t(
+                                  "days-lbl"
+                              )}`
+                            : `${"paid-on-lbl"} ${moment(
+                                  record.payments?.[0].date
+                              ).format("DD/MM/YY")}`
+                    }
+                >
+                    <div>
+                        <Dot
+                            size={12}
+                            color={invoicePaymentStatusColor(
+                                record.issueDate,
+                                record.paidAmount
+                            )}
+                        />
+                    </div>
+                </Tooltip>
             ),
+        },
+        {
+            title: "Date",
+            dataIndex: "issueDate",
+            key: "issueDate",
+            render: (date) => moment(date).format("DD/MM/YY"),
+        },
+        {
+            title: "PosNumber",
+            dataIndex: "posNumber",
+            key: "posNumber",
         },
         {
             title: "Code",
@@ -458,12 +121,7 @@ const Search = () => {
             dataIndex: "number",
             key: "number",
         },
-        {
-            title: "Date",
-            dataIndex: "issueDate",
-            key: "issueDate",
-            render: (date) => moment(date).format("DD/MM/YY"),
-        },
+
         {
             title: "Razon Social",
             dataIndex: "fiscalName",
@@ -473,36 +131,41 @@ const Search = () => {
             title: "CUIT",
             dataIndex: "cuit",
             key: "cuit",
+            render: (text) => formatCUIT(text),
         },
-        {
-            title: "Amount",
-            dataIndex: "amount",
-            key: "amount",
-            render: (amount) => `$${amount.toFixed(2)}`,
-        },
-        {
-            title: "IVA",
-            dataIndex: "iva",
-            key: "iva",
-            render: (iva) => `$${iva.toFixed(2)}`,
-        },
+        // {
+        //     title: "Amount",
+        //     dataIndex: "amount",
+        //     key: "amount",
+        //     render: (amount) => `$${amount.toFixed(2)}`,
+        // },
+        // {
+        //     title: "IVA",
+        //     dataIndex: "iva",
+        //     key: "iva",
+        //     render: (iva) => `$${iva.toFixed(2)}`,
+        // },
         {
             title: "Total",
             key: "total",
-            render: (record) => `$${record.total.toFixed(2)}`,
+            render: (record) => `$${formatNumberES(record.total)}`,
         },
         {
             title: "Paid Amount",
             key: "paidAmount",
             render: (record) => {
-                return `$${record.paidAmount.toFixed(2)}`;
+                return `$${formatNumberES(record.paidAmount)}`;
             },
         },
         {
-            title: "Origin",
-            dataIndex: "origin",
-            key: "origin",
+            title: "Payment Date",
+            key: "paymentDate",
+            render: (_, record) =>
+                record.payments?.[0]
+                    ? moment(record.payments?.[0].date).format("DD/MM/YY")
+                    : "-",
         },
+
         {
             title: "Status",
             dataIndex: ["status", "name"],
@@ -517,6 +180,49 @@ const Search = () => {
                 </Tag>
             ),
         },
+        {
+            title: "Origin",
+            key: "origin",
+            render: (_, record) => (
+                <Button
+                    type="link"
+                    onClick={() => handleOriginNavigation(record)}
+                >
+                    {formatLicense(record?.origin?.data?.vehicleRef)}
+                </Button>
+            ),
+        },
+        {
+            title: "Acciones",
+            key: "actions",
+            align: "center",
+            width: 120,
+            render: (_, record) => (
+                <Flex vertical gap={"middle"}>
+                    <Button
+                        type="primary"
+                        ghost
+                        size="small"
+                        onClick={() => setPaymentModal(record)}
+                        disabled={record?.payments?.length}
+                    >
+                        {t(
+                            record?.payments?.length
+                                ? "edit-payment-lbl"
+                                : "set-payment-lbl"
+                        )}
+                    </Button>
+                    <Button
+                        type="primary"
+                        ghost
+                        size="small"
+                        onClick={() => {}}
+                    >
+                        {t("view-details-lbl")}
+                    </Button>
+                </Flex>
+            ),
+        },
     ];
 
     return (
@@ -525,7 +231,7 @@ const Search = () => {
                 <h1>Página de Facturacion</h1>
                 <Filters
                     setFilters={(f) => {
-                        setPage(1); 
+                        setPage(1);
                         setFilters(f);
                     }}
                     loading={loading}
@@ -548,6 +254,13 @@ const Search = () => {
                         },
                     }}
                 />
+                {paymentModal && (
+                    <InvoicePaymentsModal
+                        refreshData={fetchInvoices}
+                        invoice={paymentModal}
+                        setInvoice={setPaymentModal}
+                    />
+                )}
             </Layout.Body>
         </Layout>
     );

@@ -76,6 +76,7 @@ export const Filters = ({ setFilters, loading }) => {
                                     label: status.name,
                                     value: status.code,
                                 }))}
+                                allowClear
                                 loading={loadingInputsData}
                             />
                         </Form.Item>

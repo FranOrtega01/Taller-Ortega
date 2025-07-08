@@ -5,19 +5,17 @@ import mongoose from "mongoose";
 export const ESTIMATE_STATUS_ENUM = {
     PAID: { code: "PAID", name: "Pagado" },
     PENDING: { code: "PENDING", name: "Pendiente" },
-    REJECTED: { code: "REJECTED", name: "Rechazado" },
     SENT: { code: "SENT", name: "Enviado" },
+    REJECTED: { code: "REJECTED", name: "Rechazado" },
 };
 export const ESTIMATE_STATUS_CODES = Object.keys(ESTIMATE_STATUS_ENUM);
 
 // -> Job Status
 export const JOB_STATUS_ENUM = {
-    PENDING: { code: "PENDING", name: "Pendiente" },
+    PENDING: { code: "PENDING", name: "En gestión" },
     IN_PROGRESS: { code: "IN_PROGRESS", name: "En progreso" },
-    CANCELLED: { code: "CANCELLED", name: "Cancelado" },
     COMPLETED: { code: "COMPLETED", name: "Completado" },
-    INVOICED: { code: "INVOICED", name: "Facturado" },
-    INVOICE_PAID: { code: "INVOICE_PAID", name: "Pagado" },
+    CANCELLED: { code: "CANCELLED", name: "Cancelado" },
 };
 export const JOB_STATUS_CODES = Object.keys(JOB_STATUS_ENUM);
 
@@ -37,7 +35,7 @@ export const CLAIM_STATUS_ENUM = {
     ACTIVE: { code: "ACTIVE", name: "Activo" },
     WAITING_AMP: { code: "WAITING_AMP", name: "Esperando ampliación" },
     CANCELLED: { code: "CANCELLED", name: "Cancelado" },
-    INVOICED: { code: "INVOICED", name: "Facturado" },
+    COMPLETED: { code: "COMPLETED", name: "Completado" },
 };
 export const CLAIM_STATUS_CODES = Object.keys(CLAIM_STATUS_ENUM);
 
@@ -64,6 +62,7 @@ export const INVOICE_TYPE_ENUM = {
     NC: { code: "NC", name: "Nota de Crédito A" },
     NCE: { code: "NCE", name: "Nota de Crédito Electrónica (FCE) A" },
     B: { code: "B", name: "Factura B" },
+    X: { code: "X", name: "#" },
 };
 
 export const INVOICE_TYPE_CODES = Object.keys(INVOICE_TYPE_ENUM);

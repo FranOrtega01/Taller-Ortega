@@ -78,7 +78,22 @@ const Create = () => {
             const jobData = {
                 isParticular: data.isParticular,
                 licensePlate: data.vehicle.licensePlate,
-                company: data.isParticualar ? null : data.company.company,
+                company: data.isParticualar
+                    ? null
+                    : {
+                          company: data.company.company,
+                          hasOrder: data.company.hasOrder,
+                          claims: data.company.hasOrder
+                              ? {
+                                    claimDate: data.company.claimDate,
+                                    claimNumber: data.company.claimNumber,
+                                    claimAmount: data.company.claimAmount,
+                                    claimDeductible:
+                                        data.company.claimDeductible,
+                                    claimInsured: data.company.claimInsured,
+                                }
+                              : null,
+                      },
                 date: data.particular.date,
                 entryDate: data.particular?.entryDate,
                 description: data.particular?.description,

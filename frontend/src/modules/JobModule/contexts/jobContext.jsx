@@ -144,6 +144,8 @@ export function JobProvider({ children }) {
             // Step 4 - Company & Claims Info
 
             case 4:
+                console.log("STEP 4: ", values);
+                
                 stepData = {
                     company: {
                         ...values,

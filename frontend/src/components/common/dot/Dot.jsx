@@ -1,12 +1,8 @@
 import React from "react";
-import { theme } from "antd";
 
-export const Dot = ({ size = 8, color = "blue", ...props}) => {
-    // Usa token de colores de Ant Design si está dentro de ConfigProvider
-    const { token } = theme.useToken();
-
+export const Dot = ({ size = 8, color = "blue", ...props }) => {
     return (
-        <span
+        <div
             style={{
                 display: "inline-block",
                 width: size,
@@ -18,4 +14,3 @@ export const Dot = ({ size = 8, color = "blue", ...props}) => {
         />
     );
 };
-

@@ -2,6 +2,7 @@ import {
     JOB_STATUS_ENUM,
     PART_STATUS_ENUM,
     ESTIMATE_STATUS_ENUM,
+    CLAIM_STATUS_ENUM,
 } from "../mongo/models/utils.js";
 
 import { InvoiceDTO } from "./invoice.dto.js";
@@ -9,6 +10,7 @@ import { InvoiceDTO } from "./invoice.dto.js";
 export class JobDTO {
     constructor(job) {
         this.job = job;
+        console.log("JobDTO initialized with job:", job);
     }
 
     get id() {
@@ -50,7 +52,7 @@ export class JobDTO {
             isParticular: rest?.isParticular || false,
             claims: claims?.map((claim) => ({
                 id: claim._id,
-                status: claim.status,
+                status: CLAIM_STATUS_ENUM[claim.status],
                 amount: claim.amount,
                 company: claim.company?.name || null,
             })),
@@ -76,7 +78,6 @@ export class JobDTO {
             amount,
             estimate,
             iva,
-            associatedInvoices,
             ...rest
         } = this.job;
         const rawJob = {
@@ -100,13 +101,15 @@ export class JobDTO {
         };
 
         if (!this.job?.isParticular) {
-            rawJob.companyData.claims = {
-                claims: this.job?.claims || [],
-                totalClaims: this.claimCount,
-                activeClaims: this.nonCancelledClaimCount,
-            };
+            console.log("Claims: ", this.job?.claims);
+
+            // rawJob.companyData.claims = {
+            //     claims: this.job?.claims?.map(c => ({...c, status: CLAIM_STATUS_ENUM[c.status]})) || [],
+            //     totalClaims: this.claimCount,
+            //     activeClaims: this.nonCancelledClaimCount,
+            // };
         }
-        
+
         if (estimate) {
             const { job, ...estimateRest } = estimate;
             rawJob.estimate = {

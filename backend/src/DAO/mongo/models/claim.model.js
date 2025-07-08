@@ -63,15 +63,15 @@ const claimSchema = new mongoose.Schema({
             "El Monto es requerido",
         ],
     },
-    iva: {
-        type: Number,
-        required: [
-            function () {
-                return this.status !== CLAIM_STATUS_ENUM.PENDING.code;
-            },
-            "El IVA es requerido",
-        ],
-    },
+    // iva: {
+    //     type: Number,
+    //     required: [
+    //         function () {
+    //             return this.status !== CLAIM_STATUS_ENUM.PENDING.code;
+    //         },
+    //         "El IVA es requerido",
+    //     ],
+    // },
     deductible: {
         type: Number,
         required: [
@@ -89,6 +89,15 @@ const claimSchema = new mongoose.Schema({
         type: String,
         enum: CLAIM_TYPE_CODES,
         default: CLAIM_TYPE_ENUM.MAIN.code,
+    },
+    isCleas: {
+        type: Boolean,
+        required: [
+            function () {
+                return this.status !== CLAIM_STATUS_ENUM.PENDING.code;
+            },
+            "CLEAS es requerido",
+        ],
     },
     workPanels: {
         type: workPanelsSchema,

@@ -168,7 +168,11 @@ export default class Job {
                     claims: 1,
                 },
             },
-
+            {
+                $sort: {
+                    date: -1,
+                },
+            },
             { $skip: skip },
             ...(limit ? [{ $limit: limit }] : []),
         ];
@@ -234,6 +238,10 @@ export default class Job {
             .lean();
 
         return jobs.filter((job) => job.vehicle?.owner);
+    };
+
+    getAllClaimsForJob = async (id) => {
+        return await jobModel.findOne({ _id: id });
     };
 
     create = async (data, options = {}) => {
@@ -311,8 +319,31 @@ export default class Job {
 
     attachInvoice = async (id, invoiceId, options = {}) => {
         const job = await jobModel.findById(id);
+        if (!job) {
+            throw new Error("Trabajo no encontrado");
+        }
         job.associatedInvoices.push(invoiceId);
         await job.save(options);
         return job;
+    };
+
+    activateJob = async (id, data, options = {}) => {
+        const job = await jobModel.findById(id);
+        console.log(data);
+
+        if (!job) {
+            throw new Error("Trabajo no encontrado");
+        }
+        if (job.status !== JOB_STATUS_ENUM.PENDING.code) {
+            throw new Error("El trabajo ya fue activado");
+        }
+        Object.assign(job, data);
+        return await job.save();
+    };
+
+    completeJob = async (id, data, options = {}) => {
+        const job = await jobModel.findById(id);
+        Object.assign(job, data);
+        return await job.save();
     };
 }

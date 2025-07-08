@@ -112,10 +112,10 @@ export const CompanyData = () => {
                     <Col span={3}>
                         <FloatingLabel
                             label={t("order-date-lbl")}
-                            value={formValues?.orderDate}
+                            value={formValues?.claimDate}
                         >
                             <Form.Item
-                                name="orderDate"
+                                name="claimDate"
                                 rules={[
                                     {
                                         required: hasOrder,
@@ -151,16 +151,49 @@ export const CompanyData = () => {
                             </Form.Item>
                         </FloatingLabel>
                     </Col>
+                    <Col span={4}>
+                        <FloatingLabel
+                            label={t("claim-insured-lbl")}
+                            value={formValues?.claimInsured}
+                        >
+                            <Form.Item
+                                name="claimInsured"
+                                rules={[
+                                    {
+                                        required: hasOrder,
+                                        message: t("field-required-lbl"),
+                                    },
+                                ]}
+                            >
+                                <Input disabled={!hasOrder} />
+                            </Form.Item>
+                        </FloatingLabel>
+                    </Col>
+                    <Col span={4}>
+                        <Form.Item
+                            name="claimCleas"
+                            valuePropName="checked"
+                            initialValue={false}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: t("field-required-lbl"),
+                                },
+                            ]}
+                        >
+                            <Checkbox disabled={!hasOrder}>{t("is-cleas-lbl")}</Checkbox>
+                        </Form.Item>
+                    </Col>
                 </Row>
 
                 <Row gutter={[16, 16]} style={{ marginTop: "1rem" }}>
                     <Col span={3}>
                         <FloatingLabel
                             label={t("order-amount-lbl")}
-                            value={formValues?.orderAmount}
+                            value={formValues?.claimAmount}
                         >
                             <Form.Item
-                                name="orderAmount"
+                                name="claimAmount"
                                 rules={[
                                     {
                                         required: hasOrder,
@@ -176,17 +209,9 @@ export const CompanyData = () => {
                     <Col span={3}>
                         <FloatingLabel
                             label={t("order-iva-lbl")}
-                            value={formValues?.orderIva}
+                            value={formValues?.claimIva}
                         >
-                            <Form.Item
-                                name="orderIva"
-                                rules={[
-                                    {
-                                        required: hasOrder,
-                                        message: t("field-required-lbl"),
-                                    },
-                                ]}
-                            >
+                            <Form.Item name="claimIva">
                                 <Input type="number" disabled />
                             </Form.Item>
                         </FloatingLabel>
@@ -194,10 +219,10 @@ export const CompanyData = () => {
                     <Col span={3}>
                         <FloatingLabel
                             label={t("order-deductible-lbl")}
-                            value={formValues?.orderDeductible}
+                            value={formValues?.claimDeductible}
                         >
                             <Form.Item
-                                name="orderDeductible"
+                                name="claimDeductible"
                                 rules={[
                                     {
                                         required: hasOrder,
@@ -213,17 +238,9 @@ export const CompanyData = () => {
                     <Col span={3}>
                         <FloatingLabel
                             label={t("order-total-lbl")}
-                            value={formValues?.orderTotal}
+                            value={formValues?.claimTotal}
                         >
-                            <Form.Item
-                                name="orderTotal"
-                                rules={[
-                                    {
-                                        required: hasOrder,
-                                        message: t("field-required-lbl"),
-                                    },
-                                ]}
-                            >
+                            <Form.Item name="claimTotal">
                                 <Input type="number" disabled />
                             </Form.Item>
                         </FloatingLabel>

@@ -9,14 +9,15 @@ export const Label = styled.label`
   position: absolute;
   z-index: 100;
   padding: 0 5px;
-  left: 7px;
   line-height: 8px;
   transition: all ease-in-out 0.3s;
-  transition-property: top, font-size;
+  transition-property: top, left, font-size;
   pointer-events: none;
+  background: white;
 
-  ${({ $hasFocus }) =>
-    $hasFocus
-      ? "top: -7px;font-size:12px!important;background: white;"
-      : "top:11px;"}
+  ${({ $hasFocus, $hasPrefix }) => `
+    top: ${$hasFocus ? "-7px" : "11px"};
+    left: ${$hasPrefix ? ($hasFocus ? "7px" : "21px") : "7px"};
+    font-size: ${$hasFocus ? "12px!important" : "inherit"};
+  `}
 `;

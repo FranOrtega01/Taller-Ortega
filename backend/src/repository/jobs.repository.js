@@ -4,7 +4,7 @@ export default class JobRepository {
         this.dao = dao;
     }
 
-  get = async (page, limit, filters) => {
+    get = async (page, limit, filters) => {
         try {
             return await this.dao.get(page, limit, filters);
         } catch (error) {
@@ -32,6 +32,16 @@ export default class JobRepository {
             throw new Error(error.message);
         }
     };
+
+    getAllClaimsForJob = async (id) => {
+        try {
+            const claims = await this.dao.getAllClaimsForJob(id);
+            return claims;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    };
+
     create = async (data, options = {}) => {
         try {
             return await this.dao.create(data, options);
@@ -91,6 +101,20 @@ export default class JobRepository {
             return await this.dao.attachInvoice(id, invoiceId, options);
         } catch (error) {
             throw new Error(error.message);
+        }
+    };
+    activateJob = async (id, data, options = {}) => {
+        try {
+            return await this.dao.activateJob(id, data, options);
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    };
+    completeJob = async (id, data, options = {}) => {
+        try {
+            return await this.dao.completeJob(id, data, options);
+        } catch (e) {
+            throw new Error(e.message);
         }
     };
 }

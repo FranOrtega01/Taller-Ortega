@@ -12,13 +12,16 @@ import {
     ErrorResponse,
     formatLicensePlate,
     validateFilters,
+    validateRequiredFields,
 } from "./customResponse.js";
 import mongoose from "mongoose";
 import {
+    CLAIM_STATUS_ENUM,
     JOB_STATUS_ENUM,
     PART_STATUS_ENUM,
 } from "../DAO/mongo/models/utils.js";
 import moment from "moment";
+import { ClaimDTO } from "../DAO/DTO/claim.dto.js";
 
 export const get = async (req, res) => {
     try {
@@ -69,8 +72,6 @@ export const get = async (req, res) => {
             filters.dateTo = moment(req.query.dateTo).toDate();
         }
 
-        console.log("Filters: ", filters);
-
         const rawData = await JobService.get(page, limit, filters);
 
         const data = rawData.data.map((job) => new JobDTO(job).jobGeneral());
@@ -83,6 +84,18 @@ export const get = async (req, res) => {
 export const getByID = async (req, res) => {
     try {
         const job = await JobService.getByID(req.params.id);
+        if (!job.isParticular) {
+            const mainClaim = job?.claims?.[0];
+            if (mainClaim) {
+                const allAmps = await ClaimService.getAmpsByParent(
+                    mainClaim._id
+                );
+                if (allAmps?.length > 0) {
+                    job.claims.push(...allAmps);
+                }
+            }
+        }
+
         const formattedJob = new JobDTO(job).jobDetail();
         return SuccessResponse(res, formattedJob);
     } catch (error) {
@@ -114,7 +127,9 @@ export const getAllInvoicesForJob = async (req, res) => {
     try {
         const { jobId } = req.params;
         const job = await JobService.getByID(jobId);
-        console.log("Job: ", job);
+        console.log("JOB IN INVOICES: ", job);
+        const allClaims = await ClaimService.getAllClaimsForJob(jobId);
+        console.log("ALL CLAIMS: ", allClaims);
 
         const invoices = [];
 
@@ -124,7 +139,8 @@ export const getAllInvoicesForJob = async (req, res) => {
         });
 
         // 2. Facturas desde claims
-        job.claims?.forEach((claim) => {
+
+        allClaims?.forEach((claim) => {
             claim.associatedInvoices?.forEach((inv) => {
                 invoices.push({
                     ...inv,
@@ -132,23 +148,32 @@ export const getAllInvoicesForJob = async (req, res) => {
                     claimId: claim._id,
                 });
             });
-
-            // 3. Amps del claim con facturas (si las hay)
-            claim.amps?.forEach((amp, index) => {
-                amp.associatedInvoices?.forEach((inv) => {
-                    invoices.push({
-                        ...inv,
-                        origin: "claimAmp",
-                        claimId: claim._id,
-                        ampIndex: index,
-                    });
-                });
-            });
         });
+
         const formattedInvoices = invoices.map((inv) =>
             new InvoiceDTO(inv).invoiceGeneral()
         );
         return SuccessResponse(res, formattedInvoices);
+    } catch (error) {
+        return ErrorResponse(res, error);
+    }
+};
+
+export const getAllClaimsForJob = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id)
+            return ErrorResponse(res, "El ID del Trabajo es requerido", 400);
+
+        const job = await JobService.getByID(id);
+        if (!job) return ErrorResponse(res, "Trabajo no encontrado", 404);
+
+        const claims = await ClaimService.getAllClaimsForJob(id);
+        const formattedClaims = claims?.map((c) =>
+            new ClaimDTO(c).claimDetail()
+        );
+
+        return SuccessResponse(res, formattedClaims);
     } catch (error) {
         return ErrorResponse(res, error);
     }
@@ -192,7 +217,19 @@ export const create = async (req, res) => {
         if (!licensePlate)
             return ErrorResponse(res, "La Patente es requerida", 400);
         if (!req.body?.company && !isParticular)
-            return ErrorResponse(res, "El Compañía es requerido", 400);
+            return ErrorResponse(res, "El Compañía es requerida", 400);
+        if (
+            req.body.hasOrder &&
+            !(
+                req.body?.company?.claims?.claimDate ||
+                req.body?.company?.claims?.claimNumber ||
+                req.body?.company?.claims?.claimAmount ||
+                req.body?.company?.claims?.claimDeductible ||
+                req.body?.company?.claims?.claimInsured
+            )
+        ) {
+            return ErrorResponse(res, "El Siniestro está incompleto", 400);
+        }
 
         // Validate Vehicle
         let vehicle;
@@ -212,9 +249,12 @@ export const create = async (req, res) => {
         let company;
         if (!isParticular) {
             try {
-                company = await CompanyService.getByCUIT(req.body?.company, {
-                    session,
-                });
+                company = await CompanyService.getByCUIT(
+                    req.body?.company?.company,
+                    {
+                        session,
+                    }
+                );
             } catch (error) {
                 company = null;
             }
@@ -245,15 +285,19 @@ export const create = async (req, res) => {
             vehicle: vehicle._id,
             company: company?._id || null,
             date: req?.body?.date,
+            entryDate: req?.body?.entryDate,
             description: req?.body?.description,
             observations: req?.body?.observations,
             amount: req?.body?.amount,
-            iva: req?.body?.iva,
             workPanels: req?.body?.workPanels,
             parts: req?.body?.parts,
             thumbnails: req?.body?.thumbnails,
             isParticular,
             estimate: estimate_id,
+            status:
+                req?.body?.entryDate && req?.body?.amount > 0
+                    ? JOB_STATUS_ENUM.IN_PROGRESS.code
+                    : JOB_STATUS_ENUM.PENDING.code,
         };
 
         // Create Job
@@ -273,7 +317,16 @@ export const create = async (req, res) => {
                 job: job._id,
                 type: "MAIN",
             };
-            console.log("claimData: ", claimData);
+            if (req.body.company.hasOrder) {
+                claimData.status = CLAIM_STATUS_ENUM.ACTIVE.code;
+                claimData.number = req.body.company.claims.claimNumber;
+                claimData.date = req.body.company.claims.claimDate;
+                claimData.amount = req.body.company.claims.claimAmount;
+                claimData.deductible = req.body.company.claims.claimDeductible;
+                claimData.insured = req.body.company.claims.claimInsured;
+            }
+            // Set Status if Active
+
             // Create Claim
             const claim = await ClaimService.create(claimData, { session });
 
@@ -409,5 +462,75 @@ export const deleteAmp = async (req, res) => {
         SuccessResponse(res, job);
     } catch (error) {
         ErrorResponse(res, error);
+    }
+};
+
+// PENDING to IN_PROGRESS (fields required);
+export const activateJob = async (req, res) => {
+    const { id } = req.params;
+    if (!id) return ErrorResponse(res, "El ID del Trabajo es requerido", 400);
+
+    try {
+        const data = Object.fromEntries(
+            Object.entries({
+                claims: req.body.claims,
+                entryDate: req.body.entryDate,
+                description: req.body.description,
+                estimate: req.body.estimate,
+                amount: req.body.amount,
+                workPanels: req.body.workPanels,
+                parts: req.body.parts,
+                status: JOB_STATUS_ENUM.IN_PROGRESS.code,
+            }).filter(([_, value]) => value !== undefined && value !== null)
+        );
+
+        const active = await JobService.activateJob(id, data);
+        return SuccessResponse(res, active, 200);
+    } catch (e) {
+        ErrorResponse(res, e);
+    }
+};
+
+export const completeJob = async (req, res) => {
+    const { id } = req.params;
+    if (!id) return ErrorResponse(res, "El ID del Trabajo es requerido", 400);
+
+    try {
+        const job = await JobService.getByID(id);
+
+        if (job.status !== JOB_STATUS_ENUM.IN_PROGRESS.code) {
+            throw new Error(
+                `El trabajo no está ${JOB_STATUS_ENUM.IN_PROGRESS.name}`
+            );
+        }
+
+        const allClaims = await ClaimService.getAllClaimsForJob(id);
+
+        let allInvoices = true;
+        if (job?.associatedInvoices?.length < 1 && job?.isParticular) allInvoices = false;
+
+        // 2. Facturas desde claims
+        console.log("ALL CLAIMS: ", allClaims);
+
+        allClaims?.forEach((claim) => {
+            if (claim?.associatedInvoices?.length < 1) allInvoices = false;
+        });
+
+        if (!allInvoices) {
+            throw new Error(
+                "El trabajo no tiene todos los comprobantes cargados"
+            );
+        }
+
+        const data = Object.fromEntries(
+            Object.entries({
+                status: JOB_STATUS_ENUM.COMPLETED.code,
+            }).filter(([_, value]) => value !== undefined && value !== null)
+        );
+
+        const active = await JobService.completeJob(id, data);
+        return SuccessResponse(res, active, 200);
+    } catch (e) {
+        ErrorResponse(res, e);
     }
 };

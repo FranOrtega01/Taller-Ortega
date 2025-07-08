@@ -41,11 +41,25 @@ export default class Claim {
     };
 
     getAmpsByParent = async (parentId) => {
-        return await claimModel.find({
-            parentClaim: parentId,
-            type: CLAIM_TYPE_ENUM.AMP.code,
-        });
+        return await claimModel
+            .find({
+                parentClaim: parentId,
+                type: CLAIM_TYPE_ENUM.AMP.code,
+            })
+            .lean()
+            .exec();
     };
+
+    getAllClaimsForJob = async (jobId) => {
+        return await claimModel
+            .find({ job: jobId })
+            .populate("company")
+            .populate("associatedInvoices")
+
+            // .populate("job")
+            .lean()
+            .exec();
+    }
 
     getManyByCompany = async (company) => {
         return await claimModel
@@ -87,11 +101,10 @@ export default class Claim {
             status: CLAIM_STATUS_ENUM.ACTIVE.code,
             deductible: data.deductible,
             amount: data.amount,
-            iva: data.iva,
-            workPanels: data.workPanels,
-            parts: data.parts,
             thumbnails: data.thumbnails,
             date: data.date,
+            insured: data.insured,
+            isCleas: data.isCleas,
         };
 
         if (data.type === CLAIM_TYPE_ENUM.MAIN.code) {

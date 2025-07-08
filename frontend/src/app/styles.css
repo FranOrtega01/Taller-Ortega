@@ -6,3 +6,8 @@
     box-sizing: border-box;
     font-family: 'Roboto';
 }
+
+.ant-notification-notice-icon {
+    font-size: 18px !important; 
+    margin-top: 4px;
+}

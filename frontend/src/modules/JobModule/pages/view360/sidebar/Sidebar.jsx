@@ -43,6 +43,7 @@ const Sidebar = ({ activeKey, setActiveKey, isParticular}) => {
             </Title>
             <Container>
                 <Tabs
+                style={{height: "100%"}}
                     defaultActiveKey={activeKey}
                     type="line"
                     tabPosition="left"

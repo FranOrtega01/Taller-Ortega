@@ -39,7 +39,7 @@ export const formatDate = (date, format = null) => {
 };
 
 export const formatNumberES = (number, decimals = 2) => {
-    if (isNaN(number) || number === null || number === undefined) return "";
+    if (isNaN(number) || number === null || number === undefined) return "0,00";
 
     const fixed = Number(number).toFixed(decimals);
     const [integerPart, decimalPart] = fixed.split(".");
@@ -117,7 +117,6 @@ export const invoiceStatusColor = (status) => {
 };
 
 export const invoicePaymentStatusColor = (date, isPaid = false) => {
-
     if (isPaid) {
         return COLORS.GREEN;
     }
@@ -125,11 +124,29 @@ export const invoicePaymentStatusColor = (date, isPaid = false) => {
     const issuedDate = moment(date);
     const diffInDays = today.diff(issuedDate, "days");
 
-    if (diffInDays <= 30) {
+    if (diffInDays <= 14) {
         return COLORS.BLUE;
-    } else if (diffInDays <= 60) {
+    } else if (diffInDays <= 30) {
         return COLORS.ORANGE;
     } else {
         return COLORS.RED;
     }
+};
+
+export function toKebabLabel(str, withSuffix = true) {
+    const kebab = str.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+    return withSuffix ? `${kebab}-lbl` : kebab;
+}
+
+export const getClaimInvoiceDescription = (
+    claimNumber,
+    insured,
+    vehicle,
+    licensePlate
+) => {
+    return `Por trabajos realizados segun orden de trabajo adjunta.
+Siniestro N° ${claimNumber}
+Asegurado ${insured}
+Vehiculo ${vehicle}
+Dominio ${licensePlate}`;
 };
