@@ -74,6 +74,7 @@ export const Invoices = ({ id, data }) => {
         },
     ];
 
+    
     return (
         <Table
             dataSource={invoices}

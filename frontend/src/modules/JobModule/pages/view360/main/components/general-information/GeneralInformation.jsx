@@ -15,6 +15,8 @@ export const GeneralInformation = ({ id, data, refreshData, canEdit }) => {
     const handleFinish = async (values) => {
         try {
             console.log("Form values:", values);
+            
+            
             // await someApiCall(values);
         } catch (error) {
             console.error("Error on submit:", error);
