@@ -2,14 +2,71 @@ import React, { useEffect, useState } from "react";
 import { Parts } from "./components/parts/Parts";
 import { Description } from "./components/description/Description";
 import { WorkPanels } from "./components/work-panels/WorkPanels";
-
-import { Spin } from "antd";
+import FloatingLabel from "../../../../../../../components/common/floatingLabel/FloatingLabel";
+import { FixedFooter } from '../../../styles'
+import { Spin, Form, DatePicker, Button } from "antd";
+import { CustomInputNumber } from "../../../../../../../components/common/theme/inputs/custom-input-number/CustomInputNumber";
+import dayjs from "dayjs";
 
 export const GeneralInformation = ({ id, data, refreshData, canEdit }) => {
+    const [form] = Form.useForm();
+    const formValues = Form.useWatch([], form);
+
+    const handleFinish = async (values) => {
+        try {
+            console.log("Form values:", values);
+            // await someApiCall(values);
+        } catch (error) {
+            console.error("Error on submit:", error);
+        }
+    };
+
     if (!data) return <Spin />;
     return (
-        <div>
-            <Description description={data?.description} />
+        <Form
+            form={form}
+            layout="vertical"
+            initialValues={{
+                entryDate: data?.entryDate ? dayjs(data.entryDate) : null,
+                amount: data?.amount,
+            }}
+            onFinish={handleFinish}
+            style={{
+                marginTop:"1rem"
+            }}
+        >
+            {/* <Description description={data?.description} /> */}
+
+            <FloatingLabel
+                label="Fecha de ingreso"
+                name="entryDate"
+                value={formValues?.entryDate}
+            >
+                <Form.Item
+                    name="entryDate"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Ingrese la fecha de ingreso",
+                        },
+                    ]}
+                >
+                    <DatePicker placeholder="" style={{ width: "100%" }} format="DD/MM/YY" />
+                </Form.Item>
+            </FloatingLabel>
+
+            <FloatingLabel
+                label="Monto"
+                name="amount"
+                value={formValues?.amount}
+            >
+                <Form.Item
+                    name="amount"
+                    rules={[{ required: true, message: "Ingrese el monto" }]}
+                >
+                    <CustomInputNumber style={{ width: "100%" }} min={0} />
+                </Form.Item>
+            </FloatingLabel>
 
             {/* {data?.parts && (
                 <Parts
@@ -18,7 +75,17 @@ export const GeneralInformation = ({ id, data, refreshData, canEdit }) => {
                     jobId={id}
                 />
             )} */}
-            <WorkPanels canEdit={canEdit} jobId={id} workPanels={data?.workPanels} />
-        </div>
+            <WorkPanels
+                canEdit={canEdit}
+                jobId={id}
+                workPanels={data?.workPanels}
+            />
+
+            <FixedFooter>
+                <Button type="primary" htmlType="submit">
+                    Guardar
+                </Button>
+            </FixedFooter>
+        </Form>
     );
 };
