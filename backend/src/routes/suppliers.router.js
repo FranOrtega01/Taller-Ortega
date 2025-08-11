@@ -3,14 +3,14 @@ import { get, create, update, getByID, deleteOne } from '../controller/suppliers
 
 const router = Router();
 
-router.get('/', get);
+router.get('/suppliers', get);
 
-router.get('/:id', getByID);
+router.get('/suppliers/:id', getByID);
 
-router.post('/', create);
+router.post('/suppliers', create);
 
-router.put('/:id', update);
+router.put('/suppliers/:id', update);
 
-router.delete('/:id', deleteOne)
+router.delete('/suppliers/:id', deleteOne)
 
 export default router;

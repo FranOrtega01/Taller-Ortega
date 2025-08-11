@@ -6,9 +6,10 @@ import estimateRouter from './routes/estimates.router.js';
 import invoiceRouter from './routes/invoices.router.js';
 import clientRouter from './routes/clients.router.js'
 import supplierRouter from './routes/suppliers.router.js'
-import supplierTransactionRouter from './routes/supplierTransaction.router.js'
+import supplierAccountMovementRouter from './routes/supplierAccountMovement.router.js'
 import purchaseRouter from './routes/purchases.router.js'
 import googleDriveRouter from './routes/googleDrive.router.js';
+import ledgerRouter from "./routes/ledgers.router.js"
 
 const socket = (app) => {
     app.use((req, res, next) => {
@@ -26,8 +27,9 @@ const socket = (app) => {
     app.use("/api/invoices", invoiceRouter);
     app.use("/api/clients", clientRouter);
     app.use("/api/suppliers", supplierRouter);
-    app.use("/api/supplier-transactions", supplierTransactionRouter);
-    app.use("/api/purchases", purchaseRouter)
+    app.use("/api/supplier-account-movements", supplierAccountMovementRouter);
+    app.use("/api/purchases", purchaseRouter);
+    app.use("/api/ledger", ledgerRouter);
 
     app.use("/api/googleDrive", googleDriveRouter);
 };

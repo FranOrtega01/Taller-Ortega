@@ -24,11 +24,16 @@ export const InvoiceForm = ({
     const [form] = Form.useForm();
     const formValues = Form.useWatch([], form);
 
+    const isJob = type === "JOB";
+    const isClaim = type === "CLAIM";
+
     useEffect(() => {
         if (!data) return;
+        form.resetFields()
     }, [data]);
 
     useEffect(() => {
+        if(isJob) return;
         const total = parseFloat(formValues?.total) || 0;
         const amount = +(total / 1.21);
         const iva = +(amount * 0.21);
@@ -40,11 +45,11 @@ export const InvoiceForm = ({
         let payload = {
             ...values,
         };
-        if (type === "CLAIM") {
+        if (isClaim) {
             payload.claimId = data.claimId;
         }
 
-        if (type === "JOB") {
+        if (isJob) {
             payload.jobId = data.jobId;
         }
         finishAction(payload);
@@ -52,6 +57,7 @@ export const InvoiceForm = ({
 
     return (
         <Form
+            style={{marginTop: "2rem"}}
             form={form}
             onFinish={handleFinish}
             initialValues={{
@@ -164,14 +170,14 @@ export const InvoiceForm = ({
                     >
                         <Form.Item
                             rules={[
-                                {
-                                    required: true,
-                                    message: t("required-field-lbl"),
-                                },
+                                // {
+                                //     required: true,
+                                //     message: t("required-field-lbl"),
+                                // },
                             ]}
                             name="caeNumber"
                         >
-                            <InputNumber style={{ width: "100%" }} min={0} />
+                            <InputNumber disabled={isJob} style={{ width: "100%" }} min={0} />
                         </Form.Item>
                     </FloatingLabel>
                 </Col>
@@ -183,10 +189,10 @@ export const InvoiceForm = ({
                     >
                         <Form.Item
                             rules={[
-                                {
-                                    required: true,
-                                    message: t("required-field-lbl"),
-                                },
+                                // {
+                                //     required: true,
+                                //     message: t("required-field-lbl"),
+                                // },
                             ]}
                             name="caeDate"
                         >
@@ -197,6 +203,7 @@ export const InvoiceForm = ({
                                     current && current > dayjs().endOf("day")
                                 }
                                 placeholder=""
+                                disabled={isJob}
                             />
                         </Form.Item>
                     </FloatingLabel>
@@ -216,7 +223,7 @@ export const InvoiceForm = ({
                             ]}
                             name="cuit"
                         >
-                            <Input style={{ width: "100%" }} />
+                            <Input disabled={isJob} style={{ width: "100%" }} />
                         </Form.Item>
                     </FloatingLabel>
                 </Col>
@@ -281,7 +288,7 @@ export const InvoiceForm = ({
                             name="total"
                         >
                             <CustomInputNumber
-                                disabled={type !== "MANUAL"}
+                                disabled={isClaim}
                                 prefix={"$"}
                                 style={{ width: "100%" }}
                             />

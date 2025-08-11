@@ -7,8 +7,9 @@ import {
     Vehicle,
     Client,
     Supplier,
-    SupplierTransaction,
+    SupplierAccountMovement,
     Purchase,
+    Ledger,
 } from "../DAO/factory.js";
 
 import ClaimRepository from "./claims.repository.js";
@@ -19,8 +20,9 @@ import JobRepository from "./jobs.repository.js";
 import VehicleRepository from "./vehicles.repository.js";
 import ClientRepository from "./clients.repository.js";
 import SupplierRepository from "./suppliers.repository.js";
-import SupplierTransactionRepository from "./supplierTransactions.repository.js";
+import SupplierAccountMovementRepository from "./supplierAccountMovements.repository.js";
 import PurchaseRepository from "./purchases.repository.js";
+import LedgerRepository from "./ledgers.repository.js";
 
 export const ClaimService = new ClaimRepository(new Claim());
 export const CompanyService = new CompanyRepository(new Company());
@@ -30,5 +32,7 @@ export const JobService = new JobRepository(new Job());
 export const VehicleService = new VehicleRepository(new Vehicle());
 export const ClientService = new ClientRepository(new Client());
 export const SupplierService = new SupplierRepository(new Supplier());
-export const SupplierTransactionService = new SupplierTransactionRepository(new SupplierTransaction())
+export const SupplierAccountMovementService =
+    new SupplierAccountMovementRepository(new SupplierAccountMovement());
 export const PurchaseService = new PurchaseRepository(new Purchase());
+export const LedgerService = new LedgerRepository(new Ledger());

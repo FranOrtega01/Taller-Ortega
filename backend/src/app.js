@@ -14,6 +14,7 @@ import cors from "cors";
 import config from "./config/config.js";
 
 import socket from "./socket.js";
+import helmet from "helmet";
 
 import mongoose from "mongoose";
 
@@ -25,6 +26,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Helmet for security
+app.use(helmet());
 
 // Cors
 const corsOptions = {

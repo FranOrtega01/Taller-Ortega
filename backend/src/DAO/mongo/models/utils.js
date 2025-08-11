@@ -67,6 +67,34 @@ export const INVOICE_TYPE_ENUM = {
 
 export const INVOICE_TYPE_CODES = Object.keys(INVOICE_TYPE_ENUM);
 
+export const CURRENCY_MAP = {
+    ARS: "Peso Argentino",
+    USD: "Dólar Estadounidense",
+    EUR: "Euro",
+    BRL: "Real Brasileño",
+    CLP: "Peso Chileno",
+};
+
+export const CURRENCY_MAP_CODES = Object.keys(CURRENCY_MAP);
+
+export const SUPPLIER_ACCOUNT_MOVEMENT_ORIGIN = {
+    PURCHASE: "PURCHASE",
+    PAYMENT: "PAYMENT",
+    THIRD_PARTY_PAYMENT: "THIRD_PARTY_PAYMENT",
+};
+export const SUPPLIER_ACCOUNT_MOVEMENT_ORIGIN_CODES = Object.values(
+    SUPPLIER_ACCOUNT_MOVEMENT_ORIGIN
+);
+
+export const SUPPLIER_ACCOUNT_MOVEMENT_METHOD = {
+    INVOICE: "INVOICE",
+    TRANSF: "TRANSF",
+    CASH: "CASH",
+};
+export const SUPPLIER_ACCOUNT_MOVEMENT_METHOD_CODES = Object.values(
+    SUPPLIER_ACCOUNT_MOVEMENT_METHOD
+);
+
 // =================================== Sub Schemas ===================================
 // -> Work Panel Item
 const workItemSchema = new mongoose.Schema(
@@ -145,6 +173,28 @@ export const addressSchema = new mongoose.Schema({
     city: { type: String },
     province: { type: String },
 });
+
+// -> Currency
+
+export const currencySchema = new mongoose.Schema(
+    {
+        code: {
+            type: String,
+            required: true,
+            uppercase: true,
+            trim: true,
+            minlength: 3,
+            maxlength: 3,
+            match: [
+                /^[A-Z]{3}$/,
+                "El código de moneda debe tener 3 letras según ISO 4217",
+            ],
+            default: "ARS",
+        },
+    },
+    { _id: false }
+);
+
 
 // =================================== Functions ======================================
 

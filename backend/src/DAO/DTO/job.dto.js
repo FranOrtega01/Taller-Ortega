@@ -10,7 +10,6 @@ import { InvoiceDTO } from "./invoice.dto.js";
 export class JobDTO {
     constructor(job) {
         this.job = job;
-        console.log("JobDTO initialized with job:", job);
     }
 
     get id() {
@@ -101,8 +100,6 @@ export class JobDTO {
         };
 
         if (!this.job?.isParticular) {
-            console.log("Claims: ", this.job?.claims);
-
             // rawJob.companyData.claims = {
             //     claims: this.job?.claims?.map(c => ({...c, status: CLAIM_STATUS_ENUM[c.status]})) || [],
             //     totalClaims: this.claimCount,

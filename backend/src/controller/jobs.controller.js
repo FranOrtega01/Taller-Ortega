@@ -25,29 +25,6 @@ import { ClaimDTO } from "../DAO/DTO/claim.dto.js";
 
 export const get = async (req, res) => {
     try {
-        const allowedFilters = [
-            "cuit",
-            "isParticular",
-            "status",
-            "owner",
-            "model",
-            "licensePlate",
-            "brand",
-            "dateFrom", // "YYYY-MM-DD"
-            "dateTo", // "YYYY-MM-DD"
-            "page",
-            "limit",
-        ];
-
-        const invalid = validateFilters(req.query, allowedFilters, res);
-        if (invalid.length > 0) {
-            return ErrorResponse(
-                res,
-                `Filtros inválidos: ${invalid.join(", ")}`,
-                400
-            );
-        }
-
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || null;
 
@@ -364,6 +341,23 @@ export const update = async (req, res) => {
         ErrorResponse(res, error);
     }
 };
+
+export const updateGeneralInfo = async (req, res) => {
+     try {
+        const { id } = req.params;
+        if (req?.body?._id) delete req?.body?._id;
+        const payload = {
+            entryDate: req?.body?.entryDate,
+            amount: req?.body?.amount,
+            workPanels: req?.body?.workPanels
+        }
+
+        const job = await JobService.update(id, payload);
+        SuccessResponse(res, job);
+    } catch (error) {
+        ErrorResponse(res, error);
+    }
+}
 
 export const updateParts = async (req, res) => {
     if (!Object.keys(req.body).length)

@@ -150,3 +150,14 @@ Asegurado ${insured}
 Vehiculo ${vehicle}
 Dominio ${licensePlate}`;
 };
+
+export const getParticularInvoiceDescription = (
+    owner,
+    vehicle,
+    licensePlate
+) => {
+    return `Por trabajos particulares realizados.
+Titular ${owner || ""}
+Vehiculo ${vehicle || ""}
+Dominio ${licensePlate || ""}`;
+};

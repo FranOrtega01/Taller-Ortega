@@ -33,6 +33,11 @@ const Search = () => {
             render: (_, record) => formatCUIT(record?.cuit),
         },
         {
+            title: "Razon Social",
+            key: ["fiscalName"],
+            dataIndex: ["fiscalName"],
+        },
+        {
             title: "Direccion Fiscal",
             key: ["fiscalAdress", "adress"],
             dataIndex: ["fiscalAdress", "adress"],

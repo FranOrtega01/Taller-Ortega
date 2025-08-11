@@ -1,7 +1,6 @@
 import { handleError } from "./utils.js";
-import { SupplierService } from "./index.js";
 
-export default class SupplierTransactionRepository {
+export default class SupplierAccountMovementRepository {
     constructor(dao) {
         this.dao = dao;
     }
@@ -10,7 +9,7 @@ export default class SupplierTransactionRepository {
         try {
             return await this.dao.get();
         } catch (error) {
-            throw handleError(error, "supplier_transactions");
+            throw handleError(error, "supplier_account_movements");
         }
     };
 
@@ -22,7 +21,15 @@ export default class SupplierTransactionRepository {
             }
             return estimate;
         } catch (error) {
-            throw handleError(error, "supplier_transactions");
+            throw handleError(error, "supplier_account_movements");
+        }
+    };
+
+     getBySupplier = async (id) => {
+        try {
+            return await this.dao.getBySupplier(id);
+        } catch (error) {
+            throw handleError(error, "supplier_account_movements");
         }
     };
 
@@ -30,7 +37,7 @@ export default class SupplierTransactionRepository {
         try {            
             return await this.dao.create(data, options);
         } catch (error) {
-            throw handleError(error, "supplier_transactions");
+            throw handleError(error, "supplier_account_movements");
         }
     };
 
@@ -38,7 +45,7 @@ export default class SupplierTransactionRepository {
         try {
             return await this.dao.update(id, data);
         } catch (error) {
-            throw handleError(error, "supplier_transactions");
+            throw handleError(error, "supplier_account_movements");
         }
     };
 
@@ -46,7 +53,7 @@ export default class SupplierTransactionRepository {
         try {
             return await this.dao.delete(id);
         } catch (error) {
-            throw handleError(error, "supplier_transactions");
+            throw handleError(error, "supplier_account_movements");
         }
     };
 }

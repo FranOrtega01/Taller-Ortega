@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { formatGMTm3 } from "./utils.js";
+import { formatGMTm3, currencySchema, SUPPLIER_ACCOUNT_MOVEMENT_ORIGIN_CODES, SUPPLIER_ACCOUNT_MOVEMENT_METHOD_CODES } from "./utils.js";
 
-const supplierTransactionSchema = new mongoose.Schema({
+const supplierAccountMovementSchema = new mongoose.Schema({
     supplier: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "suppliers",
@@ -21,14 +21,24 @@ const supplierTransactionSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    purchase: {
+    currency: currencySchema,
+    method: {
+        type: String,
+        enum: SUPPLIER_ACCOUNT_MOVEMENT_METHOD_CODES,
+        required: true,
+    },
+    origin: {
+        type: String,
+        enum: SUPPLIER_ACCOUNT_MOVEMENT_ORIGIN_CODES,
+        required: true,
+    },
+    referenceId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "purchases",
         default: null,
     },
 });
 
 export default mongoose.model(
-    "supplier_transactions",
-    supplierTransactionSchema
+    "supplier_account_movements",
+    supplierAccountMovementSchema
 );

@@ -10,8 +10,9 @@ export let Job;
 export let Vehicle;
 export let Client;
 export let Supplier;
-export let SupplierTransaction;
+export let SupplierAccountMovement;
 export let Purchase;
+export let Ledger;
 
 console.log(`PERSISTENCE: [${config.persistence}]`);
 mongoose.set("strictQuery", false);
@@ -32,7 +33,10 @@ const { default: VehicleMongo } = await import("./mongo/vehicles.mongo.js");
 const { default: ClientMongo } = await import("./mongo/clients.mongo.js");
 const { default: SupplierMongo } = await import("./mongo/suppliers.mongo.js");
 const { default: PurchaseMongo } = await import("./mongo/purchases.mongo.js");
-const { default: SupplierTransactionMongo} = await import("./mongo/supplierTransactions.mongo.js")
+const { default: SupplierAccountMovementMongo } = await import(
+    "./mongo/supplierAccountMovements.mongo.js"
+);
+const { default: LedgerMongo } = await import("./mongo/ledgers.mongo.js");
 
 Claim = ClaimMongo;
 Company = CompanyMongo;
@@ -42,5 +46,6 @@ Job = JobMongo;
 Vehicle = VehicleMongo;
 Client = ClientMongo;
 Supplier = SupplierMongo;
-SupplierTransaction = SupplierTransactionMongo
+SupplierAccountMovement = SupplierAccountMovementMongo;
 Purchase = PurchaseMongo;
+Ledger = LedgerMongo;

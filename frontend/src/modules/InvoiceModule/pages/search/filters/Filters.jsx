@@ -28,7 +28,7 @@ export const Filters = ({ setFilters, loading }) => {
                 const [types, statuses, companyList] = await Promise.all([
                     get_invoices_types(),
                     get_invoices_statuses(),
-                    get_companies(),
+                    get_companies("dropdown"),
                 ]);
                 console.log("companies: ", companyList);
 
@@ -49,16 +49,16 @@ export const Filters = ({ setFilters, loading }) => {
 
         const filters = {
             invoiceNumber: values.invoiceNumber
-                ? `0${values.invoiceNumber}`
+                ? `${values.invoiceNumber}`
                 : undefined,
             code: values.invoiceType || undefined,
             status: values.invoiceStatus || undefined,
             cuit: values.cuit || undefined,
         };
 
-        if (values.jobDate) {
-            filters.dateFrom = values.jobDate[0].format("YYYY-MM-DD");
-            filters.dateTo = values.jobDate[1].format("YYYY-MM-DD");
+        if (values.invoiceDate) {
+            filters.dateFrom = values.invoiceDate[0].format("YYYY-MM-DD");
+            filters.dateTo = values.invoiceDate[1].format("YYYY-MM-DD");
         }
         setFilters(filters);
     };

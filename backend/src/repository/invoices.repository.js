@@ -24,6 +24,14 @@ export default class InvoiceRepository {
         }
     };
 
+    getGeneralStats = async (dateFrom = null, dateTo = null) => {
+        try {
+            return await this.dao.getGeneralStats(dateFrom, dateTo);
+        } catch (error) {
+            throw handleError(error, "invoices");
+        }
+    }
+
     create = async (data, options = {}) => {
         try {
             return await this.dao.create(data, options);

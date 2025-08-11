@@ -107,9 +107,10 @@ const Search = () => {
             render: (date) => moment(date).format("DD/MM/YY"),
         },
         {
-            title: "PosNumber",
+            title: "N° Venta",
             dataIndex: "posNumber",
             key: "posNumber",
+            width: 75,
         },
         {
             title: "Code",
@@ -126,12 +127,14 @@ const Search = () => {
             title: "Razon Social",
             dataIndex: "fiscalName",
             key: "fiscalName",
+            width: "15%"
         },
         {
             title: "CUIT",
             dataIndex: "cuit",
             key: "cuit",
             render: (text) => formatCUIT(text),
+            width: 115,
         },
         // {
         //     title: "Amount",

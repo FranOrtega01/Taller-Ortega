@@ -17,6 +17,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import PDFParser from "pdf2json";
+import { ZodError } from "zod";
 
 // Obtener __dirname en ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -24,46 +25,97 @@ const __dirname = path.dirname(__filename);
 
 export default __dirname;
 
-const obj = {
-    user: {
-        username: "guest",
-        first_name: "Guest",
-        last_name: "User",
-    },
-    resources: [
-        {
-            type: "dashboard",
-            id: "c219e656-71c3-4aeb-9663-3a2b876b2c94",
-        },
-    ],
-    rls: [],
+// Cuil Validation
+
+export function isValidCUIT(cuit) {
+    if (!/^\d{11}$/.test(cuit)) return false;
+    const digits = cuit.split("").map(Number);
+    const multipliers = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
+    const sum = multipliers.reduce((acc, m, i) => acc + m * digits[i], 0);
+    const mod11 = sum % 11;
+    const check = mod11 === 0 ? 0 : mod11 === 1 ? 9 : 11 - mod11;
+    return check === digits[10];
+}
+
+// Zod Error Formatter
+export function formatZodError(err) {
+    if (!(err instanceof ZodError)) return null;
+
+    const errors = err.issues.map((i) => ({
+        path: i.path.join("."),
+        code: i.code,
+        message: i.message,
+        expected: i.expected,
+        received: i.received,
+        keys: i.keys,
+    }));
+
+    return {
+        error: "ValidationError",
+        message: "La solicitud contiene datos inválidos.",
+        errors,
+    };
+}
+
+export const startOfMonthUTC = (year, month) =>
+    new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0));
+
+export const endOfMonthUTC = (year, month) => {
+    const startNext = new Date(Date.UTC(year, month, 1, 0, 0, 0, 0)); // primer día del mes siguiente
+    return new Date(startNext.getTime() - 1); // último ms del mes objetivo
 };
 
-// const secret = "test-guest-secret-change-me";
+const selectedCoverages = [
+    {
+        code: "SC_SC_FALLECIMIENTO",
+        calculatorTypeCode: "ALIQUOT",
+        ageTypeCode: null,
+        mortalityTableCode: null,
+        values: [
+            {
+                code: "INSURED_AMOUNT",
+                value: "1000000",
+            },
+            {
+                code: "WITHHOLDING",
+                value: "0",
+            },
+            {
+                code: "TECHNICAL_INTEREST",
+                value: "0",
+            },
+            {
+                code: "BONUS_SURCHARGE",
+                value: "0",
+            },
+            {
+                code: "ALIQUOT_PERCENTAGE",
+                value: "5",
+            },
+        ],
+    },
+];
 
-// const token = jwt.sign(obj, secret, {
-//     algorithm: "HS256",
-//     expiresIn: "1h",
-// });
-// console.log("TOKEN: ", token);
-// console.log("Token decode: ", jwt.decode(token));
-const secret = "test-guest-secret-change-me";
+const coverageWordings = [
+    {
+        coverage: {
+            name: "Fallecimiento",
+            code: "SC_SC_FALLECIMIENTO",
+        },
+        wordings: [],
+    },
+    {
+        coverage: {
+            name: "Hospitalizacion",
+            code: "SC_SC_HOSPITALIZACION",
+        },
+        wordings: [],
+    },
+];
 
+const filtered = coverageWordings?.filter(cw => selectedCoverages.some(sc => cw.coverage.code === sc.code))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+console.log("Filtered: ", filtered);
 
 
 /*

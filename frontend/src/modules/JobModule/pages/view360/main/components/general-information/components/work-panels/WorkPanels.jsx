@@ -21,15 +21,21 @@ import {
 } from "../../../../../../../../../services/utils";
 import FloatingLabel from "../../../../../../../../../components/common/floatingLabel/FloatingLabel";
 import { t } from "../../../../../../../../../customHooks/useTranslation";
+import { CustomInputNumber } from "../../../../../../../../../components/common/theme/inputs/custom-input-number/CustomInputNumber";
+
 const workPanelItems = ["bodyWork", "paintWork", "glassWork", "otherWork"];
 
-export const WorkPanels = ({ workPanels, canEdit }) => {
-    const [form] = Form.useForm();
+export const WorkPanels = ({ workPanels, canEdit, form }) => {
+    console.log("work panels: ", workPanels);
 
     return (
-        <Form form={form} layout="vertical">
-            <Flex vertical gap={"middle"}>
-                {workPanelItems?.map((wp) => (
+        <Flex vertical gap={"middle"}>
+            {workPanelItems?.map((wp) => {
+                // Usar useWatch para observar los valores actuales del form
+                const panelValues = Form.useWatch(["workPanels", wp], form) || {};
+                const quantity = panelValues.quantity ?? workPanels?.[wp]?.quantity ?? 0;
+                const amount = panelValues.amount ?? workPanels?.[wp]?.amount ?? 0;
+                return (
                     <Row gutter={[16, 16]} align={"middle"} key={wp}>
                         <Col span={4}>
                             <span>{toKebabLabel(wp)}</span>
@@ -37,26 +43,22 @@ export const WorkPanels = ({ workPanels, canEdit }) => {
                         <Col span={6}>
                             <Space.Compact>
                                 <Form.Item
-                                    name={[wp, "quantity"]}
+                                    name={["workPanels", wp, "quantity"]}
                                     noStyle
-                                    initialValue={
-                                        workPanels?.[wp]?.quantity || 0
-                                    }
+                                    initialValue={workPanels?.[wp]?.quantity || 0}
                                 >
-                                    <InputNumber
-                                        // disabled={!canEdit}
+                                    <CustomInputNumber
                                         readOnly={!canEdit}
                                         addonBefore="#"
                                         style={{ width: "30%" }}
                                     />
                                 </Form.Item>
                                 <Form.Item
-                                    name={[wp, "amount"]}
+                                    name={["workPanels", wp, "amount"]}
                                     noStyle
                                     initialValue={workPanels?.[wp]?.amount || 0}
                                 >
-                                    <InputNumber
-                                        // disabled={!canEdit}
+                                    <CustomInputNumber
                                         readOnly={!canEdit}
                                         addonBefore="$"
                                         style={{ width: "70%" }}
@@ -68,14 +70,13 @@ export const WorkPanels = ({ workPanels, canEdit }) => {
                             <span>
                                 $
                                 {formatNumberES(
-                                    workPanels?.[wp]?.amount *
-                                        workPanels?.[wp]?.quantity
+                                    (Number(amount) || 0) * (Number(quantity) || 0)
                                 )}
                             </span>
                         </Col>
                     </Row>
-                ))}
-            </Flex>
-        </Form>
+                );
+            })}
+        </Flex>
     );
 };

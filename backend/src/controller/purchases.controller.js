@@ -2,9 +2,11 @@ import mongoose from "mongoose";
 import {
     PurchaseService,
     SupplierService,
-    SupplierTransactionService,
+    SupplierAccountMovementService,
 } from "../repository/index.js";
 import { ErrorResponse, SuccessResponse } from "./customResponse.js";
+import { SUPPLIER_ACCOUNT_MOVEMENT_ORIGIN } from "../DAO/mongo/models/utils.js";
+import { createSupplierAccountMovement } from "../schemas/supplierAccountMovement.schema.js";
 
 const formatPurchase = (purchase) => {
     if (purchase._id) {
@@ -58,14 +60,6 @@ export const getByID = async (req, res) => {
 };
 
 export const create = async (req, res) => {
-    if (!Object.keys(req.body).length)
-        return ErrorResponse(res, "La Compra debe tener información", 400);
-    if (!req?.body?.supplierCUIT) {
-        return ErrorResponse(res, "El Proveedor es obligatorio", 400);
-    }
-    if (!req?.body?.netAmount21 && !req?.body?.netAmount10) {
-        return ErrorResponse(res, "El Monto es obligatorio", 400);
-    }
     const session = await mongoose.startSession(); // Start Session in case of rollback @Fran
     try {
         session.startTransaction(); // Start Transaction @Fran
@@ -75,23 +69,25 @@ export const create = async (req, res) => {
         const purchase = await PurchaseService.create(data, { session });
 
         // Check if supplier exists and create SupplierTransaction
-        let supplier;
+        let supplier = null;
         try {
             supplier = await SupplierService.getByCUIT(purchase?.supplierCUIT);
-        } catch {
-            supplier = null;
-        }
+        } catch {}
+
         if (supplier) {
-            const supplierTransactionPayload = {
-                supplier: supplier?._id,
-                concept: purchase?.concept,
-                credit: purchase?.total,
-                purchase: purchase?._id,
-            };
-            await SupplierTransactionService.create(
-                supplierTransactionPayload,
-                { session }
-            );
+            const txPayload = createSupplierAccountMovement.parse({
+                supplier: supplier._id.toString(),
+                date: purchase?.date ?? undefined,
+                concept: purchase.concept,
+                credit: 0,
+                debit: purchase.total,
+                currency: purchase.currency ?? undefined,
+                method: purchase.method ?? "INVOICE",
+                origin: "PURCHASE",
+                referenceId: purchase._id.toString(),
+            });
+                
+            await SupplierAccountMovementService.create(txPayload, { session });
         }
         // If all ok, commit transaction
         await session.commitTransaction();
@@ -128,4 +124,3 @@ export const deleteOne = async (req, res) => {
         return ErrorResponse(res, error);
     }
 };
-

@@ -52,6 +52,16 @@ export const ClaimDetail = ({
                     t("claim-create-success-lbl")
                 );
             }
+
+            if (claim.status.code === "ACTIVE") {
+                // await complete_claim_amp(claim._id);
+                showNotification(
+                    NOTIFICATION_TYPE.SUCCESS,
+                    t("claim-complete-success-lbl"),
+                    "no hace nada aun"
+                );
+            }
+
             handleOnCreateAmp();
         } catch (error) {
             showNotification(

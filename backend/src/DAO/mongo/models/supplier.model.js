@@ -38,7 +38,7 @@ const supplierSchema = new mongoose.Schema({
             message: "Ya hay un Proveedor con este Nombre.",
         },
     },
-    adress: {
+    address: {
         type: addressSchema,
         default: null,
     },

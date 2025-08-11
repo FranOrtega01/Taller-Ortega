@@ -25,7 +25,7 @@ export const Filters = ({ setFilters, loading }) => {
             try {
                 const [statuses, companyList] = await Promise.all([
                     get_job_statuses(),
-                    get_companies(),
+                    get_companies("dropdown"),
                 ]);
                 console.log("companies: ", companyList);
 

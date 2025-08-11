@@ -5,30 +5,6 @@ import { JOB_STATUS_ENUM } from "./models/utils.js";
 export default class Job {
     constructor() {}
 
-    // get = async (page = 1, limit, filters = {}) => {
-    //     const skip = (page - 1) * limit;
-    //     const [data, total] = await Promise.all([
-    //         jobModel
-    //             .find(filters)
-    //             .skip(skip)
-    //             .populate({ path: "vehicle", populate: { path: "owner" } })
-    //             .populate({
-    //                 path: "claims",
-    //                 populate: {
-    //                     path: "company",
-    //                 },
-    //             })
-    //             .lean()
-    //             .exec(),
-    //         jobModel.countDocuments(filters),
-    //     ]);
-
-    //     return {
-    //         data,
-    //         totalItems: total,
-    //     };
-    // };
-
     get = async (page = 1, limit = 10, filters = {}) => {
         const skip = (page - 1) * limit;
 

@@ -109,6 +109,22 @@ export const getTypes = async (req, res) => {
     }
 };
 
+export const getGeneralStats = async (req, res) => {
+    try {
+        const { dateFrom, dateTo } = req.query;
+        const dateFromParsed = dateFrom ? moment(dateFrom).toDate() : null;
+        const dateToParsed = dateTo ? moment(dateTo).toDate() : null;
+
+        const stats = await InvoiceService.getGeneralStats(
+            dateFromParsed,
+            dateToParsed
+        );
+        return SuccessResponse(res, stats);
+    } catch (error) {
+        return ErrorResponse(res, error);
+    }
+};
+
 export const create = async (req, res) => {
     if (!Object.keys(req.body).length)
         return ErrorResponse(res, "El Comprobante debe tener información", 400);

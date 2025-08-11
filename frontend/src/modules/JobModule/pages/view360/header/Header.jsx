@@ -7,7 +7,7 @@ import {
     jobIsCompanyColor,
 } from "../../../../../services/utils";
 
-const Header = ({ data, btnAction, getBtnLabel, getStatusLabel }) => {
+const Header = ({ data, btnAction, getBtnLabel, getStatusLabel, headerActionDisabled }) => {
     return (
         <Layout.Header>
             <Row>
@@ -29,7 +29,7 @@ const Header = ({ data, btnAction, getBtnLabel, getStatusLabel }) => {
                 </Col>
                 <Col>
                     <Tag color={"gold"}>{getStatusLabel()}</Tag>
-                    <Button onClick={btnAction}>{getBtnLabel()}</Button>
+                    <Button disabled={headerActionDisabled} type="primary" onClick={btnAction}>{getBtnLabel()}</Button>
                 </Col>
             </Row>
             <Divider />

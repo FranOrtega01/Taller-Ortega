@@ -22,6 +22,7 @@ import {
     showNotification,
     NOTIFICATION_TYPE,
 } from "../../../../components/common/notification/Notification";
+
 const View = () => {
     const { id } = useParams();
     const [activeKey, setActiveKey] = useState("GeneralInfo");
@@ -29,19 +30,33 @@ const View = () => {
     const [job, setJob] = useState(null);
     const [sidebarLoaded, setSidebarLoaded] = useState(false);
     const [canEdit, setCanEdit] = useState(null);
+    const [headerActionDisabled, setHeaderActionDisabled] = useState(true);
+    const [completedSteps, setCompletedSteps] = useState({
+        generalInfo: false,
+        files: false,
+        claims: false,
+        invoices: false,
+        estimate: false,
+    });
 
     const getJob = async () => {
         try {
             if (!sidebarLoaded) setLoading(true);
             setLoading(true);
-            const job = await get_job_by_id(id);
+            const data = await get_job_by_id(id);
+            const job = data?.payload || {};
+
             setSidebarLoaded(true);
+
             // Can Edit -> if job is pending (not activated) can edit = true
             setCanEdit(
-                job?.payload?.status?.code === "PENDING" ||
-                    job?.payload?.status?.code === "IN_PROGRESS"
+                job?.status?.code === "PENDING" ||
+                    job?.status?.code === "IN_PROGRESS"
             );
-            setJob(job?.payload || {});
+
+            checkGeneralInfoStatus(job);
+
+            setJob(job);
         } catch (error) {
             console.log(error);
         } finally {
@@ -49,19 +64,12 @@ const View = () => {
         }
     };
 
-    useEffect(() => {
-        getJob();
-    }, []);
-
-    const getBtnLabel = () => {
-        switch (job?.status?.code) {
-            case "PENDING":
-                return t("activate-lbl");
-            case "IN_PROGRESS":
-                return t("complete-lbl");
-            default:
-                return t("default-lbl");
-        }
+    const checkGeneralInfoStatus = (job) => {
+        if (job?.entryDate && job?.expenses?.amount)
+            setCompletedSteps((prev) => ({
+                ...prev,
+                generalInfo: true,
+            }));
     };
 
     const getStatusLabel = () => {
@@ -81,11 +89,22 @@ const View = () => {
     };
 
     const activate = async () => {
-        console.log("Activate btn");
+        try {
+            await activate_job(id);
+            showNotification(
+                NOTIFICATION_TYPE.SUCCESS,
+                t("activate-job-success-lbl")
+            );
+        } catch (error) {
+            showNotification(
+                NOTIFICATION_TYPE.ERROR,
+                t("activate-job-error-lbl"),
+                error?.response?.data?.message
+            );
+        }
     };
 
     const complete = async () => {
-        console.log("Complete btn");
         try {
             await complete_job(id);
             showNotification(
@@ -115,6 +134,31 @@ const View = () => {
         }
     };
 
+    const getBtnLabel = () => {
+        switch (job?.status?.code) {
+            case "PENDING":
+                return t("activate-lbl");
+            case "IN_PROGRESS":
+                return t("complete-lbl");
+            default:
+                return t("default-lbl");
+        }
+    };
+
+    useEffect(() => {
+        if (!job) {
+            getJob();
+            return;
+        }
+        switch (job?.status?.code) {
+            case "PENDING":
+                if (completedSteps?.generalInfo) setHeaderActionDisabled(false);
+                return;
+            case "IN_PROGRESS":
+                return;
+        }
+    }, [job]);
+
     return (
         <Layout>
             {!sidebarLoaded ? (
@@ -132,6 +176,7 @@ const View = () => {
                     getStatusLabel={getStatusLabel}
                     getBtnLabel={getBtnLabel}
                     data={job}
+                    headerActionDisabled={headerActionDisabled}
                 />
                 <Main>
                     {activeKey === "GeneralInfo" && (

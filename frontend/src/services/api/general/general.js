@@ -1,9 +1,9 @@
 import axiosInstance from "../axiosInstance";
 
 // #region Companies API Service
-export const get_companies = async () => {
+export const get_companies = async (format = null) => {
     const response = await axiosInstance.get(
-        `companies/companies?format=dropdown`,
+        `companies/companies${format ? `?format=${format}` : ""}`,
         {}
     );
     return response.data;
@@ -71,8 +71,14 @@ export const activate_job = async (jobId, data) => {
 };
 
 export const complete_job = async (jobId) => {
-    const response = await axiosInstance.post(
-        `jobs/job/${jobId}/complete`,
+    const response = await axiosInstance.post(`jobs/job/${jobId}/complete`, {});
+    return response.data;
+};
+
+export const update_job_general_info = async (jobId, payload) => {
+    const response = await axiosInstance.put(
+        `jobs/job/${jobId}/general`,
+        payload,
         {}
     );
     return response.data;
@@ -121,6 +127,16 @@ export const set_invoice_payments = async (id, data) => {
 export const create_invoice = async (data) => {
     const response = await axiosInstance.post(`invoices/invoice`, data, {});
 
+    return response.data;
+};
+
+export const get_invoice_stats = async (filters = {}) => {
+    const response = await axiosInstance.get(
+        "invoices/invoices/general-stats",
+        {
+            params: filters,
+        }
+    );
     return response.data;
 };
 
@@ -212,5 +228,28 @@ export const get_client_associated_jobs = async (id) => {
 
     return response.data;
 };
+
+// #endregion
+
+// #region Suppliers API Service
+export const get_suppliers = async () => {
+    const response = await axiosInstance.get(`suppliers/suppliers`);
+
+    return response.data;
+};
+
+export const get_supplier_by_id = async (id) => {
+    const response = await axiosInstance.get(`suppliers/suppliers/${id}`);
+
+    return response.data;
+};
+
+// #endregion
+
+// #region Suppliers Account Movement API Service
+
+// #endregion
+
+// #region Purchases API Service
 
 // #endregion

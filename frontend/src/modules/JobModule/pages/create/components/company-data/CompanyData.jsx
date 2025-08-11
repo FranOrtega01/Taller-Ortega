@@ -37,7 +37,7 @@ export const CompanyData = () => {
 
     const fetchCompanies = async () => {
         try {
-            const companies = await get_companies();
+            const companies = await get_companies("dropdown");
             const formattedCompanies = (companies?.payload ?? []).map((c) => ({
                 code: c?.cuit || null,
                 name: c?.name || "",
