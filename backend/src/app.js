@@ -32,7 +32,7 @@ app.use(helmet());
 
 // Cors
 const corsOptions = {
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://192.168.0.19:5173"],
     credentials: true,
 };
 app.use(cors(corsOptions));

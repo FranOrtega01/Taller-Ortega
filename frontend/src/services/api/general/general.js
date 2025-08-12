@@ -247,7 +247,15 @@ export const get_supplier_by_id = async (id) => {
 // #endregion
 
 // #region Suppliers Account Movement API Service
+export const get_ledger_by_supplier = async (id, filters = {}) => {
+    const response = await axiosInstance.get(`ledger/suppliers/${id}/ledger`, {
+        params:{
+            ...filters
+        }
+    });
 
+    return response.data;
+};
 // #endregion
 
 // #region Purchases API Service

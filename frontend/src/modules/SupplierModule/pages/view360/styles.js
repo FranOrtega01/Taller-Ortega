@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import COLORS from "../../../../components/common/theme/colors"; // Corrected path
+import COLORS from "../../../../components/common/theme/colors";
+import TYPO from "../../../../components/common/theme/typo";
 
 export const Inner = styled.div`
 	display: flex;
@@ -12,7 +13,6 @@ export const Inner = styled.div`
 		margin: 0 !important;
 	}
 `;
-
 
 export const Main = styled.div`
 	// flex: 1;
@@ -29,3 +29,7 @@ export const Header = styled.header`
 	align-items: center;
 	padding: 0 20px;
 `;
+
+export const Subtitle = styled(TYPO.H2)`
+	font-size: 24px;
+`

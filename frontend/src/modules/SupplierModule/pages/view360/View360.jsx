@@ -6,12 +6,11 @@ import Sidebar from "./sidebar/Sidebar";
 import { GeneralInformation } from "./main/components/general-information/GeneralInformation";
 import { Account } from "./main/components/account/Account";
 import { get_supplier_by_id } from "../../../../services/api/general/general";
-import { Divider } from "antd";
 import Header from "./header/Header";
 
 const View = () => {
     const { id } = useParams();
-    const [activeKey, setActiveKey] = useState("GeneralInfo");
+    const [activeKey, setActiveKey] = useState("Account");
     const [loading, setLoading] = useState(false);
     const [supplier, setSupplier] = useState(null);
 
@@ -41,7 +40,7 @@ const View = () => {
                         <GeneralInformation id={id} data={supplier} />
                     )}
 
-                    {activeKey === "JobsInfo" && <JobsInformation id={id} data={supplier} />}
+                    {activeKey === "Account" && <Account id={id} data={supplier} />}
 
                 </Main>
             </Inner>
